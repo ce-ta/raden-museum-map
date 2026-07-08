@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Museum {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+
+  collaborations OfficialCollaboration[]
+  reports        Report[]
+}
+
+model OfficialCollaboration {
+  id          String    @id @default(cuid())
+  museumId    String
+  museum      Museum    @relation(fields: [museumId], references: [id])
+  title       String
+  description String?
+  sourceUrl   String
+  date        DateTime?
+}
+
+model Report {
+  id        String       @id @default(cuid())
+  museumId  String
+  museum    Museum       @relation(fields: [museumId], references: [id])
+  body      String
+  photoUrl  String?
+  status    ReportStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+}
+
+enum ReportStatus {
+  PENDING
+  PUBLISHED
+  HIDDEN
+}
