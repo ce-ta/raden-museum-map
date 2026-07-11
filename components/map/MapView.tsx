@@ -22,15 +22,15 @@ export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
     <MapContainer
       center={DEFAULT_CENTER}
       zoom={DEFAULT_ZOOM}
-      minZoom={5}
+      minZoom={6}
       scrollWheelZoom
       maxBounds={JAPAN_BOUNDS}
       maxBoundsViscosity={1}
       className="h-full w-full"
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'
+        url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
       />
       <MuseumMarker museums={museums} />
     </MapContainer>
