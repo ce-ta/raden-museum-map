@@ -1,16 +1,12 @@
-"use client";
-
 import dynamic from "next/dynamic";
+import { getMuseums } from "@/lib/museums";
+import MapLoader from "@/components/map/MapLoader";
 
-// Leaflet は window に依存するため SSR を無効化して読み込む。
-const MapView = dynamic(() => import("@/components/map/MapView"), {
-  ssr: false,
-});
-
-export default function Home() {
+export default async function Home() {
+  const museums = await getMuseums();
   return (
     <div className="h-dvh w-dvw">
-      <MapView />
+      <MapLoader museums={museums} />
     </div>
   );
 }

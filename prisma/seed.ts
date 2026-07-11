@@ -50,8 +50,6 @@ async function main() {
       },
     },
   });
-
-  console.log({ tokyoArt, osakaMuseum });
 }
 
 main()
