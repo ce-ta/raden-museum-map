@@ -17,13 +17,7 @@ export default async function Home() {
           でん同士美術館マップ🐚
         </h1>
       </header>
-      <div className="grid grid-cols-[2fr_1fr] h-dvh">
         <MapLoader museums={museums} />
-        <div className="bg-neutral-800">
-          <h1 className={`${notoSerifJP.className} text-neutral-100`}>詳細コンポーネント</h1>
-        </div>
-      </div>
-
     </div>
   );
 }

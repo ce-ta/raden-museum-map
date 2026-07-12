@@ -6,6 +6,8 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 import MuseumMarker from "./MuseumMarker";
 import type { MuseumMapItem } from "@/types/museum";
+import DetailInfo from "../museum/DetailInfo";
+import { useState } from "react";
 
 // 日本全体が収まる程度の初期中心座標・ズーム。
 const DEFAULT_CENTER: [number, number] = [36.2048, 138.2529];
@@ -18,21 +20,26 @@ const JAPAN_BOUNDS: [[number, number], [number, number]] = [
 ];
 
 export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   return (
-    <MapContainer
-      center={DEFAULT_CENTER}
-      zoom={DEFAULT_ZOOM}
-      minZoom={6}
-      scrollWheelZoom
-      maxBounds={JAPAN_BOUNDS}
-      maxBoundsViscosity={1}
-      className="h-full w-full"
-    >
-      <TileLayer
-        attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'
-        url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
-      />
-      <MuseumMarker museums={museums} />
-    </MapContainer>
+    <div className="grid grid-cols-[2fr_1fr] h-dvh">
+      <MapContainer
+        center={DEFAULT_CENTER}
+        zoom={DEFAULT_ZOOM}
+        minZoom={6}
+        scrollWheelZoom
+        maxBounds={JAPAN_BOUNDS}
+        maxBoundsViscosity={1}
+        className="map-tone-muted h-full w-full"
+      >
+        <TileLayer
+          attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'
+          url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+        />
+        <MuseumMarker museums={museums} onSelect={setSelectedId} />
+      </MapContainer>
+      <DetailInfo museumId={selectedId} />
+    </div>
   );
 }
