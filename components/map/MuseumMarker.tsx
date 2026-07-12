@@ -2,7 +2,7 @@
 
 import { Marker, Popup, useMap } from "react-leaflet";
 import type { MuseumMapItem } from "../../types/museum";
-import { museumIcon } from "./museumIcon";
+import { museumIcon, collaboratedMuseumIcon } from "./museumIcon";
 import { createGoogleMapUrl } from "@/lib/googleMaps";
 
 export default function MuseumMarker({ museums, onSelect }: { museums: MuseumMapItem[] }) {
@@ -11,16 +11,18 @@ export default function MuseumMarker({ museums, onSelect }: { museums: MuseumMap
     return (
         <>
             {museums.map((museum) => (
-                <Marker key={museum.id} position={[museum.lat, museum.lng]} icon={museumIcon}>
+                <Marker
+                    key={museum.id}
+                    position={[museum.lat, museum.lng]}
+                    icon={museum.hasCollaboration ? collaboratedMuseumIcon : museumIcon}
+                    eventHandlers={{ click: () => onSelect(museum.id) }}
+                >
                     <Popup interactive>
                         <strong>美術館名: {museum.name}</strong><br />
                         <button onClick={() => map.flyTo([museum.lat, museum.lng], 16, { duration: 0.3 })}>
                             このあたりを見る
                         </button><br />
-                        <a onClick={() => onSelect(museum.id)}>
-                            詳細を表示
-                        </a><br />
-                        <a href={createGoogleMapUrl(museum.lat, museum.lng)} target="_blank">Google Mapで開く</a>
+                        <a href={createGoogleMapUrl(museum.name, museum.address)} target="_blank">Google Mapで開く</a>
                     </Popup>
                 </Marker>
             ))}

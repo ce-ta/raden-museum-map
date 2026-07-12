@@ -12,28 +12,47 @@ datasource db {
   provider = "postgresql"
 }
 
+/// 施設種別マスタ（美術館・博物館など）。Museumから typeId で参照される
+model FacilityType {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+
+  museums Museum[]
+}
+
+/// 美術館・博物館などの施設情報
 model Museum {
-  id        String   @id @default(cuid())
-  name      String
-  address   String
-  lat       Float
-  lng       Float
-  createdAt DateTime @default(now())
+  id                String   @id @default(cuid())
+  name              String
+  address           String
+  lat               Float
+  lng               Float
+  websiteUrl        String?
+  phone             String?
+  openingHours      String?
+  admissionFee      String?
+  imageUrl          String? // public/ 配下の画像パス、または外部ストレージのURL
+  hasCollaboration  Boolean  @default(false) // 公式コラボが実施済みかどうか
+  typeId            Int
+  type              FacilityType @relation(fields: [typeId], references: [id])
+  createdAt         DateTime @default(now())
 
   collaborations OfficialCollaboration[]
   reports        Report[]
 }
 
+/// 施設側が公式に実施したコラボ企画（1施設に複数件ありうる）
 model OfficialCollaboration {
   id          String    @id @default(cuid())
   museumId    String
   museum      Museum    @relation(fields: [museumId], references: [id])
   title       String
   description String?
-  sourceUrl   String
+  sourceUrl   String // 告知元（公式サイト・SNS投稿など）のURL
   date        DateTime?
 }
 
+/// リスナー・ユーザーからの訪問レポート投稿
 model Report {
   id        String       @id @default(cuid())
   museumId  String
@@ -44,8 +63,9 @@ model Report {
   createdAt DateTime     @default(now())
 }
 
+/// Report の公開状態
 enum ReportStatus {
-  PENDING
-  PUBLISHED
-  HIDDEN
+  PENDING   // 投稿直後、未審査
+  PUBLISHED // 審査済み、公開中
+  HIDDEN    // 非公開（不適切な投稿など）
 }

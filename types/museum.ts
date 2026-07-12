@@ -5,4 +5,11 @@ export type MuseumMapItem = {
   address: string;
   lat: number;
   lng: number;
+  typeId: number;
+  websiteUrl: string | null;
+  phone: string | null;
+  openingHours: string | null;
+  admissionFee: string | null;
+  imageUrl: string | null;
+  hasCollaboration: boolean;
 };
