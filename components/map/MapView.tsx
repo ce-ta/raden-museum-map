@@ -39,7 +39,7 @@ export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
         />
         <MuseumMarker museums={museums} onSelect={setSelectedId} />
       </MapContainer>
-      <DetailInfo museumId={selectedId} />
+      <DetailInfo museumId={selectedId} museums={museums} />
     </div>
   );
 }

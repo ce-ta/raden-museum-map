@@ -29,3 +29,4 @@ body {
 .map-tone-muted .leaflet-tile-pane {
   filter: brightness(0.9) saturate(0.7) contrast(1.05);
 }
+

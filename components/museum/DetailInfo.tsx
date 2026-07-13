@@ -3,11 +3,15 @@
 
 import { MuseumIcon, CollaboratedMuseumIcon } from "../map/MuseumIconSvg";
 import MuseumInfo from "./MuseumInfo";
+import MuseumList from "./MuseumList";
+import { useState } from "react";
+import type { MuseumMapItem } from "@/types/museum";
 
-export default function DetailInfo({ museumId }: { museumId: string | null }) {
+export default function DetailInfo({ museumId, museums }: { museumId: string | null; museums: MuseumMapItem[] }) {
+    const [isList, setIsList] = useState(true);
 
     return (
-        <div className="ml-2">
+        <div className="ml-2 h-full flex flex-col min-h-0">
             <div className="mb-4 flex items-center gap-8">
                 <span className="flex items-center gap-2">
                     <CollaboratedMuseumIcon className="w-6 h-8" />: <span>コラボあり</span>
@@ -16,7 +20,32 @@ export default function DetailInfo({ museumId }: { museumId: string | null }) {
                     <MuseumIcon className="w-6 h-8" />: <span>コラボなし</span>
                 </span>
             </div>
-            <MuseumInfo museumId={museumId} />
+            <div className="flex-1 flex flex-col min-h-0">
+                <div className="flex flex-row">
+                    <button
+                        type="button"
+                        className={`px-4 py-2 border border-b-0 border-neutral-600 cursor-pointer ${isList ? "bg-neutral-700 font-bold" : ""}`}
+                        onClick={() => setIsList(true)}
+                    >
+                        一覧
+                    </button>
+                    <button
+                        type="button"
+                        className={`px-4 py-2 border border-b-0 border-neutral-600 cursor-pointer ${!isList ? "bg-neutral-700 font-bold" : ""}`}
+                        onClick={() => setIsList(false)}
+                    >
+                        詳細
+                    </button>
+                </div>
+
+                <div className="flex-1 min-h-0">
+                    {isList ? (
+                        <MuseumList museums={museums} />
+                    ) : (
+                        <MuseumInfo museumId={museumId} />
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

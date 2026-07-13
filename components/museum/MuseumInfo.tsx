@@ -21,8 +21,8 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
         });
     }, [museumId]);
 
-    if (!museumId) return <p>マーカーを選択すると詳細が表示されます</p>;
-    if (loading || !detail) return <p>読み込み中...</p>;
+    if (!museumId) return <p className="bg-neutral-800 text-neutral-100 p-4 h-full">マーカーを選択すると詳細が表示されます</p>;
+    if (loading || !detail) return <p className="bg-neutral-800 text-neutral-100 p-4 h-full">読み込み中...</p>;
     return (
         <div className="bg-neutral-800 text-neutral-100 p-4 space-y-6 overflow-y-auto h-full">
             <div>
