@@ -3,10 +3,12 @@
 
 import { MuseumIcon, CollaboratedMuseumIcon } from "../map/MuseumIconSvg";
 import type { MuseumMapItem } from "@/types/museum";
+import Filter from "../filter/Filter";
 
 export default function MuseumList({ museums, onSelect, setIsList }: { museums: MuseumMapItem[], onSelect: any, setIsList: any }) {
     return (
         <div className="bg-neutral-800 p-4 overflow-y-auto h-full">
+            <Filter />
             <ul className="space-y-3">
                 {museums.map((museum) => (
                     <li key={museum.id}>

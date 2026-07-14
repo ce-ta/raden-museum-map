@@ -13,3 +13,10 @@ export type MuseumMapItem = {
   imageUrl: string | null;
   hasCollaboration: boolean;
 };
+
+export type FilterState = {
+  searchText: string;
+  prefectureCode: number;
+  hasCollaboration: boolean;
+  hasNotCollaboration: boolean
+}
