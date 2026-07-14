@@ -7,9 +7,20 @@ import MuseumList from "./MuseumList";
 import { useState } from "react";
 import type { MuseumMapItem } from "@/types/museum";
 
-export default function DetailInfo({ museumId, museums }: { museumId: string | null; museums: MuseumMapItem[] }) {
-    const [isList, setIsList] = useState(true);
-
+export default function DetailInfo({
+    museumId,
+    onSelect,
+    museums,
+    isList,
+    setIsList
+}:
+    {
+        museumId: string | null,
+        onSelect: any,
+        museums: MuseumMapItem[],
+        isList: boolean,
+        setIsList: any
+    }) {
     return (
         <div className="ml-2 h-full flex flex-col min-h-0">
             <div className="mb-4 flex items-center gap-8">
@@ -40,7 +51,7 @@ export default function DetailInfo({ museumId, museums }: { museumId: string | n
 
                 <div className="flex-1 min-h-0">
                     {isList ? (
-                        <MuseumList museums={museums} />
+                        <MuseumList museums={museums} onSelect={onSelect} setIsList={setIsList} />
                     ) : (
                         <MuseumInfo museumId={museumId} />
                     )}

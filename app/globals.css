@@ -30,3 +30,15 @@ body {
   filter: brightness(0.9) saturate(0.7) contrast(1.05);
 }
 
+/* 美術館ピン: 選択中はひとまわり拡大して分かりやすくする */
+/* Leafletがマーカー本体(.museum-marker-icon)に位置決め用のinline transformを */
+/* 設定するため、拡大は内側のラッパー(.museum-marker-inner)にかける */
+.museum-marker-inner {
+  transition: transform 0.15s ease-out;
+  transform-origin: bottom center;
+}
+
+.museum-marker-icon.museum-marker-selected .museum-marker-inner {
+  transform: scale(1.5);
+}
+

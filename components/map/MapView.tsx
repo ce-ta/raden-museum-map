@@ -21,6 +21,7 @@ const JAPAN_BOUNDS: [[number, number], [number, number]] = [
 
 export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isList, setIsList] = useState(true);
 
   return (
     <div className="grid grid-cols-[2fr_1fr] h-dvh">
@@ -37,9 +38,9 @@ export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
           attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'
           url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
         />
-        <MuseumMarker museums={museums} onSelect={setSelectedId} />
+        <MuseumMarker museums={museums} selectedId={selectedId} onSelect={setSelectedId} setIsList={setIsList} />
       </MapContainer>
-      <DetailInfo museumId={selectedId} museums={museums} />
+      <DetailInfo museumId={selectedId} onSelect={setSelectedId} museums={museums} isList={isList} setIsList={setIsList} />
     </div>
   );
 }

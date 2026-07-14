@@ -20,6 +20,14 @@ model FacilityType {
   museums Museum[]
 }
 
+/// 都道府県マスタ（JIS X 0401 都道府県コード）。Museumから prefectureCode で参照される
+model Prefecture {
+  code    Int    @id // 1(北海道) 〜 47(沖縄県)
+  name    String @unique
+
+  museums Museum[]
+}
+
 /// 美術館・博物館などの施設情報
 model Museum {
   id                String   @id @default(cuid())
@@ -35,6 +43,8 @@ model Museum {
   hasCollaboration  Boolean  @default(false) // 公式コラボが実施済みかどうか
   typeId            Int
   type              FacilityType @relation(fields: [typeId], references: [id])
+  prefectureCode    Int
+  prefecture        Prefecture @relation(fields: [prefectureCode], references: [code])
   createdAt         DateTime @default(now())
 
   collaborations OfficialCollaboration[]
