@@ -2,23 +2,29 @@
 
 import { useEffect, useState } from "react";
 import { fetchMuseumDetail } from "@/lib/actions/museum";
+import ReportForm from "./ReportForm";
 type MuseumDetail = Awaited<ReturnType<typeof fetchMuseumDetail>>;
 
 export default function MuseumInfo({ museumId }: { museumId: string | null }) {
     const [detail, setDetail] = useState<MuseumDetail | null>(null);
     const [loading, setLoading] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(false);
+
+    const loadDetail = (id: string) => {
+        setLoading(true);
+        fetchMuseumDetail(id).then((data) => {
+            setDetail(data);
+            setLoading(false);
+        });
+    };
 
     useEffect(() => {
         if (!museumId) {
             setDetail(null);
             return;
         }
-        setLoading(true);
-        fetchMuseumDetail(museumId).then((data) => {
-            console.log(data);
-            setDetail(data);
-            setLoading(false);
-        });
+        setIsFormOpen(false);
+        loadDetail(museumId);
     }, [museumId]);
 
     if (!museumId) return <p className="bg-neutral-800 text-neutral-100 p-4 h-full">マーカーを選択すると詳細が表示されます</p>;
@@ -47,16 +53,51 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
                 )}
             </section>
 
-            <section>
-                <h2 className="text-sm font-semibold mb-2">投稿</h2>
+            <section className="space-y-3">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-semibold">投稿</h2>
+                    {!isFormOpen && (
+                        <button
+                            type="button"
+                            className="px-3 py-1.5 rounded-lg text-sm border border-neutral-600 text-neutral-100 cursor-pointer hover:border-neutral-400"
+                            onClick={() => setIsFormOpen(true)}
+                        >
+                            感想を投稿する
+                        </button>
+                    )}
+                </div>
+
+                {isFormOpen && (
+                    <div
+                        className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 p-4"
+                        onClick={() => setIsFormOpen(false)}
+                    >
+                        <div className="w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+                            <ReportForm
+                                museumId={museumId}
+                                onCancel={() => setIsFormOpen(false)}
+                                onSubmitted={() => {
+                                    setIsFormOpen(false);
+                                    loadDetail(museumId);
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
+
                 {detail.reports.length === 0 ? (
                     <p className="text-sm text-neutral-500">投稿はまだありません</p>
                 ) : (
                     <ul className="space-y-3">
                         {detail.reports.map((r) => (
-                            <li key={r.id}>
-                                {r.photoUrl && <img src={r.photoUrl} className="rounded mb-1" />}
-                                <p className="text-sm">{r.body}</p>
+                            <li
+                                key={r.id}
+                                className="rounded-lg border border-neutral-700 bg-white text-neutral-900 p-3 space-y-2"
+                            >
+                                {r.photoUrl && (
+                                    <img src={r.photoUrl} className="w-full rounded-md object-cover" />
+                                )}
+                                <p className="text-sm whitespace-pre-wrap">{r.body}</p>
                             </li>
                         ))}
                     </ul>

@@ -54,6 +54,10 @@ function MuseumMarkerItem({
     useEffect(() => {
         const el = markerRef.current?.getElement();
         el?.classList.toggle("museum-marker-selected", isSelected);
+
+        if (!isSelected) {
+            markerRef.current?.closePopup();
+        }
     }, [isSelected]);
 
     return (

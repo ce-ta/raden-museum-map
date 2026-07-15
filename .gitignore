@@ -42,3 +42,6 @@ next-env.d.ts
 
 /要件定義書
 /app/generated/prisma
+
+.vercel
+.env*
