@@ -4,7 +4,6 @@
 import { MuseumIcon, CollaboratedMuseumIcon } from "../map/MuseumIconSvg";
 import MuseumInfo from "./MuseumInfo";
 import MuseumList from "./MuseumList";
-import { useState } from "react";
 import type { MuseumMapItem } from "@/types/museum";
 
 export default function DetailInfo({
@@ -12,14 +11,16 @@ export default function DetailInfo({
     onSelect,
     museums,
     isList,
-    setIsList
+    setIsList,
+    isFetching
 }:
     {
         museumId: string | null,
         onSelect: any,
         museums: MuseumMapItem[],
         isList: boolean,
-        setIsList: any
+        setIsList: any,
+        isFetching: boolean
     }) {
     return (
         <div className="ml-2 h-full flex flex-col min-h-0">
@@ -51,7 +52,7 @@ export default function DetailInfo({
 
                 <div className="flex-1 min-h-0">
                     {isList ? (
-                        <MuseumList museums={museums} onSelect={onSelect} setIsList={setIsList} />
+                        <MuseumList museums={museums} onSelect={onSelect} setIsList={setIsList} isFetching={isFetching} />
                     ) : (
                         <MuseumInfo museumId={museumId} />
                     )}

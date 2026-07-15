@@ -1,6 +1,5 @@
-import dynamic from "next/dynamic";
+import MuseumMapClient from "@/components/museum/MuseumMapClient";
 import { getMuseums } from "@/lib/museums";
-import MapLoader from "@/components/map/MapLoader";
 import { Noto_Serif_JP } from "next/font/google";
 
 const notoSerifJP = Noto_Serif_JP({
@@ -10,6 +9,7 @@ const notoSerifJP = Noto_Serif_JP({
 
 export default async function Home() {
   const museums = await getMuseums();
+
   return (
     <div className="h-dvh w-dvw">
       <header className="flex items-center h-16 px-4">
@@ -17,7 +17,7 @@ export default async function Home() {
           でん同士美術館マップ🐚
         </h1>
       </header>
-        <MapLoader museums={museums} />
+      <MuseumMapClient museums={museums} />
     </div>
   );
 }

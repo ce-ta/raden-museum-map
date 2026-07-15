@@ -19,7 +19,7 @@ const JAPAN_BOUNDS: [[number, number], [number, number]] = [
   [46, 154],
 ];
 
-export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
+export default function MapView({ museums, isFetching }: { museums: MuseumMapItem[], isFetching: boolean }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isList, setIsList] = useState(true);
 
@@ -40,7 +40,7 @@ export default function MapView({ museums }: { museums: MuseumMapItem[] }) {
         />
         <MuseumMarker museums={museums} selectedId={selectedId} onSelect={setSelectedId} setIsList={setIsList} />
       </MapContainer>
-      <DetailInfo museumId={selectedId} onSelect={setSelectedId} museums={museums} isList={isList} setIsList={setIsList} />
+      <DetailInfo museumId={selectedId} onSelect={setSelectedId} museums={museums} isList={isList} setIsList={setIsList} isFetching={isFetching} />
     </div>
   );
 }

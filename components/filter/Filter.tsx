@@ -9,21 +9,9 @@ type Prefecture = {
     name: string
 }
 
-export default function Filter() {
+export default function Filter({ filterState, onChange }: { filterState: FilterState, onChange: React.Dispatch<React.SetStateAction<FilterState>> }) {
     const [isOpen, setIsOpen] = useState(false);
     const [prefectureList, setPrefectureList] = useState<Prefecture[]>([]);
-    const [filterState, setFilterState] = useState<FilterState>({
-        searchText: "",
-        prefectureCode: 0,
-        hasCollaboration: true,
-        hasNotCollaboration: true
-    });
-
-    useEffect(() => {
-        const load = () => {
-            console.log();
-        }
-    }, [filterState])
 
     useEffect(() => {
         const load = async () => {
@@ -51,7 +39,7 @@ export default function Filter() {
                         placeholder="美術館を検索"
                         className="w-full pl-9 pr-3 py-2 rounded-lg border border-neutral-600 bg-neutral-900 text-sm text-neutral-100 placeholder-neutral-500 outline-none focus:border-neutral-400"
                         onChange={(e) => {
-                            setFilterState((prev) => ({
+                            onChange((prev) => ({
                                 ...prev,
                                 searchText: e.target.value,
                             }))
@@ -88,7 +76,7 @@ export default function Filter() {
                                     className="accent-neutral-400"
                                     checked={filterState.hasCollaboration}
                                     onChange={() => {
-                                        setFilterState((prev) => ({
+                                        onChange((prev) => ({
                                             ...prev,
                                             hasCollaboration: !prev.hasCollaboration
                                         }))
@@ -102,7 +90,7 @@ export default function Filter() {
                                     className="accent-neutral-400"
                                     checked={filterState.hasNotCollaboration}
                                     onChange={() => {
-                                        setFilterState((prev) => ({
+                                        onChange((prev) => ({
                                             ...prev,
                                             hasNotCollaboration: !prev.hasNotCollaboration
                                         }))
@@ -117,14 +105,15 @@ export default function Filter() {
                         <p className="text-xs text-neutral-400 mb-2">都道府県</p>
                         <select
                             className="w-full px-3 py-2 rounded-lg border border-neutral-600 bg-neutral-900 text-sm text-neutral-100 outline-none focus:border-neutral-400"
+                            value={filterState.prefectureCode ?? ""}
                             onChange={(e) => {
-                                setFilterState((prev) => ({
+                                onChange((prev) => ({
                                     ...prev,
-                                    prefectureCode: Number(e.target.value)
+                                    prefectureCode: e.target.value === "" ? null : Number(e.target.value)
                                 }))
                             }}
                         >
-                            <option key={0} value={0}>すべて</option>
+                            <option value="">すべて</option>
                             {prefectureList.map((p) => (
                                 <option key={p.code} value={p.code}>{p.name}</option>
                             ))}

@@ -3,12 +3,14 @@
 
 import { MuseumIcon, CollaboratedMuseumIcon } from "../map/MuseumIconSvg";
 import type { MuseumMapItem } from "@/types/museum";
-import Filter from "../filter/Filter";
 
-export default function MuseumList({ museums, onSelect, setIsList }: { museums: MuseumMapItem[], onSelect: any, setIsList: any }) {
+export default function MuseumList({ museums, onSelect, setIsList, isFetching }: { museums: MuseumMapItem[], onSelect: any, setIsList: any, isFetching: boolean }) {
+    if (isFetching) {
+        return <p className="bg-neutral-800 text-neutral-100 p-4 h-full">読み込み中...</p>;
+    }
+
     return (
         <div className="bg-neutral-800 p-4 overflow-y-auto h-full">
-            <Filter />
             <ul className="space-y-3">
                 {museums.map((museum) => (
                     <li key={museum.id}>

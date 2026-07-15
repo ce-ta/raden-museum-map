@@ -16,7 +16,7 @@ export type MuseumMapItem = {
 
 export type FilterState = {
   searchText: string;
-  prefectureCode: number;
+  prefectureCode: number | null;
   hasCollaboration: boolean;
   hasNotCollaboration: boolean
 }
