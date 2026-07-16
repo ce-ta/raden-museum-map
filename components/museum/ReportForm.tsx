@@ -40,12 +40,12 @@ export default function ReportForm({
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
             />
-            <input
+            {/* <input
                 type="file"
                 accept="image/*"
                 className="w-full rounded-md border border-neutral-600 bg-neutral-900 p-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                 onChange={(e) => setPhoto(e.target.files?.[0])}
-            />
+            /> */}
             <div className="flex justify-end gap-2">
                 <button
                     type="button"

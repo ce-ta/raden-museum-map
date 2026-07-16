@@ -37,6 +37,30 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
             </div>
 
             <section>
+                <h2 className="text-sm font-semibold mb-2">公式サイト</h2>
+                {detail.websiteUrl && (
+                    <a
+                        href={detail.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-400 underline underline-offset-2 hover:text-blue-300"
+                    >
+                        公式サイトを開く
+                    </a>
+                )}
+            </section>
+
+            <section>
+                <h2 className="text-sm font-semibold mb-2">開館時間</h2>
+                <p className="text-sm text-neutral-400">{detail.openingHours}</p>
+            </section>
+
+            <section>
+                <h2 className="text-sm font-semibold mb-2">入場料</h2>
+                <p className="text-sm text-neutral-400">{detail.admissionFee}</p>
+            </section>
+
+            <section>
                 <h2 className="text-sm font-semibold mb-2">公式コラボ情報</h2>
                 {detail.collaborations.length === 0 ? (
                     <p className="text-sm text-neutral-500">コラボ情報はありません</p>
