@@ -33,6 +33,10 @@ async function main() {
   const shizuoka = prefectures.find((p) => p.name === "静岡県")!;
   const fukuoka = prefectures.find((p) => p.name === "福岡県")!;
   const osaka = prefectures.find((p) => p.name === "大阪府")!;
+  const nara = prefectures.find((p) => p.name === "奈良県")!;
+  const hiroshima = prefectures.find((p) => p.name === "広島県")!;
+  const aichi = prefectures.find((p) => p.name === "愛知県")!;
+  const nagano = prefectures.find((p) => p.name === "長野県")!;
 
   const artMuseumType = await prisma.facilityType.upsert({
     where: { name: "美術館" },
@@ -297,6 +301,127 @@ async function main() {
         },
       ],
     },
+  });
+
+  // 以下は公式コラボではなく、本人が配信や記事内で紹介・言及したのみの施設。
+  // hasCollaboration は false とし、コラボ実績（OfficialCollaboration）は登録しない。
+
+  await recreateMuseum("アーティゾン美術館", {
+    name: "アーティゾン美術館",
+    address: "東京都中央区京橋1-7-2",
+    lat: 35.678833,
+    lng: 139.771978,
+    typeId: artMuseumType.id,
+    prefectureCode: tokyo.code,
+    websiteUrl: "https://www.artizon.museum/",
+    phone: "050-5541-8600（ハローダイヤル）",
+    openingHours:
+      "10:00〜18:00（最終入館17:30、金曜は祝日を除き20:00まで）休館日：月曜（祝日の場合は開館し翌平日休館）",
+    admissionFee:
+      "展覧会により異なる。大学生・専門学校生・高校生・中学生以下・障害者手帳保持者と付添者1名は無料",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("東京都写真美術館", {
+    name: "東京都写真美術館",
+    address: "東京都目黒区三田1-13-3 恵比寿ガーデンプレイス内",
+    lat: 35.6417,
+    lng: 139.7132,
+    typeId: artMuseumType.id,
+    prefectureCode: tokyo.code,
+    websiteUrl: "https://topmuseum.jp/",
+    phone: "03-3280-0099",
+    openingHours: "10:00〜18:00（木・金曜は20:00まで）休館日：月曜（祝休日の場合は開館し翌平日休館）",
+    admissionFee: "展覧会・上映により異なる（公式サイト参照）",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("奈良国立博物館", {
+    name: "奈良国立博物館",
+    address: "奈良県奈良市登大路町50",
+    lat: 34.683641,
+    lng: 135.836622,
+    typeId: museumType.id,
+    prefectureCode: nara.code,
+    websiteUrl: "https://www.narahaku.go.jp/",
+    phone: "050-5542-8600（ハローダイヤル）",
+    openingHours:
+      "9:30〜17:00（金・土は名品展・特別陳列のみ20:00まで）休館日：月曜（祝日・休日の場合は翌平日）",
+    admissionFee: "名品展・特別陳列・特集展示：大人700円、大学生350円、小中高生無料（特別展は別料金）",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("下瀬美術館", {
+    name: "下瀬美術館",
+    address: "広島県大竹市晴海2-10-50",
+    lat: 34.240061,
+    lng: 132.226608,
+    typeId: artMuseumType.id,
+    prefectureCode: hiroshima.code,
+    websiteUrl: "https://simose-museum.jp/",
+    phone: "0827-94-4000",
+    openingHours: "9:30〜17:00（入館は16:30まで）休館日：月曜（祝休日の場合は開館）",
+    admissionFee: "一般1,800円（団体・大竹市民1,500円）、高校生・大学生900円（同800円）、中学生以下無料",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("国立西洋美術館", {
+    name: "国立西洋美術館",
+    address: "東京都台東区上野公園7-7",
+    lat: 35.715432,
+    lng: 139.775966,
+    typeId: artMuseumType.id,
+    prefectureCode: tokyo.code,
+    websiteUrl: "https://www.nmwa.go.jp/",
+    phone: "03-5777-8600",
+    openingHours:
+      "9:30〜17:30（金・土は20:00まで）休館日：月曜（祝日の場合は開館し翌平日休館）、年末年始",
+    admissionFee:
+      "常設展：一般500円、大学生250円、高校生以下・満18歳未満・満70歳以上無料（企画展は別料金）",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("愛知県美術館", {
+    name: "愛知県美術館",
+    address: "愛知県名古屋市東区東桜1-13-2 愛知芸術文化センター10階",
+    lat: 35.170851,
+    lng: 136.911322,
+    typeId: artMuseumType.id,
+    prefectureCode: aichi.code,
+    websiteUrl: "https://www-art.aac.pref.aichi.jp/",
+    phone: "052-971-5511",
+    openingHours:
+      "10:00〜17:00（最終入館16:30、金曜は20:00まで）休館日：月曜（祝日・振替休日の場合は翌日）、年末年始",
+    admissionFee: "コレクション展：一般500円、大学生300円、高校生以下無料（企画展は展覧会により異なる）",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("北澤美術館", {
+    name: "北澤美術館",
+    address: "長野県諏訪市湖岸通り1-13-28",
+    lat: 36.055827,
+    lng: 138.111704,
+    typeId: artMuseumType.id,
+    prefectureCode: nagano.code,
+    websiteUrl: "https://kitazawa-museum.or.jp/",
+    phone: "0266-58-6000",
+    openingHours: "9:00〜18:00（4〜9月）／9:00〜17:00（10〜3月）、入館は閉館30分前まで",
+    admissionFee: "大人（高校生以上）1,000円、中学生500円、小学生以下無料",
+    hasCollaboration: false,
+  });
+
+  await recreateMuseum("高浜市やきものの里 かわら美術館・図書館", {
+    name: "高浜市やきものの里 かわら美術館・図書館",
+    address: "愛知県高浜市青木町九丁目6番地18",
+    lat: 34.9161,
+    lng: 136.9969,
+    typeId: artMuseumType.id,
+    prefectureCode: aichi.code,
+    websiteUrl: "https://www.takahama-kawara-museum.com/",
+    phone: "0566-52-3366",
+    openingHours: "10:00〜17:00（最終入館16:30）休館日：月曜・火曜、年末年始ほか",
+    admissionFee: "常設展示：無料。館蔵品展・企画展・特別展は展覧会により異なる（中学生以下無料）",
+    hasCollaboration: false,
   });
 }
 
