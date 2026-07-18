@@ -24,7 +24,7 @@ export default function MapView({ museums, isFetching }: { museums: MuseumMapIte
   const [isList, setIsList] = useState(true);
 
   return (
-    <div className="grid grid-cols-[2fr_1fr] h-dvh">
+    <div className="grid grid-cols-[2fr_1fr] h-full">
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}

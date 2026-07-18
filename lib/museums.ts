@@ -1,6 +1,7 @@
 // Museum に関するデータアクセス関数をまとめる場所。
 import { prisma } from "./prisma";
 import { FilterState } from "@/types/museum";
+import type { Collaboration } from "@/types/museum";
 
 export function getMuseums() {
     return prisma.museum.findMany();
@@ -41,4 +42,16 @@ export function filterMuseums(filter: FilterState) {
             }),
         },
     });
+}
+
+export async function getCollaborationsDate(): Promise<Collaboration[]> {
+    const result = await prisma.officialCollaboration.findMany();
+    const collaborations: Collaboration[] = result.map((r) => ({
+        id: r.id,
+        title: r.title,
+        startDate: r.startDate,
+        endDate: r.endDate
+    }))
+
+    return collaborations;
 }

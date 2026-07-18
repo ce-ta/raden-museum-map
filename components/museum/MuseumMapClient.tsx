@@ -28,9 +28,11 @@ export default function MuseumMapClient({ museums: initialMuseums }: { museums: 
     }, [filterState])
 
     return (
-        <>
+        <div className="flex flex-col h-full min-h-0">
             <Filter filterState={filterState} onChange={setFilterState} />
-            <MapLoader museums={museums} isFetching={isFetching} />
-        </>
+            <div className="flex-1 min-h-0">
+                <MapLoader museums={museums} isFetching={isFetching} />
+            </div>
+        </div>
     );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Serif_JP } from "next/font/google";
+import Sidebar from "@/components/layout/Sidebar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -9,6 +10,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const notoSerifJP = Noto_Serif_JP({
+  weight: ["500", "700"],
   subsets: ["latin"],
 });
 
@@ -27,7 +33,17 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="h-dvh flex">
+        <Sidebar />
+        <div className="flex flex-col flex-1 min-w-0">
+          <header className="flex items-center h-16 px-4 shrink-0">
+            <h1 className={`${notoSerifJP.className} text-3xl font-bold text-neutral-100 tracking-wide`}>
+              でん同士美術館マップ🐚
+            </h1>
+          </header>
+          <main className="flex-1 min-h-0">{children}</main>
+        </div>
+      </body>
     </html>
   );
 }

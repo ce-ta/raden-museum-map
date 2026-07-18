@@ -20,3 +20,10 @@ export type FilterState = {
   hasCollaboration: boolean;
   hasNotCollaboration: boolean
 }
+
+export type Collaboration = {
+  id: string;
+  title: string;
+  startDate: Date | null;
+  endDate: Date | null;
+}

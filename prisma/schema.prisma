@@ -59,7 +59,8 @@ model OfficialCollaboration {
   title       String
   description String?
   sourceUrl   String // 告知元（公式サイト・SNS投稿など）のURL
-  date        DateTime?
+  startDate   DateTime? // コラボ企画の開始日（単発企画の場合はendDateと同日）
+  endDate     DateTime? // コラボ企画の終了日
 }
 
 /// リスナー・ユーザーからの訪問レポート投稿
