@@ -47,7 +47,7 @@ const NAV_ITEMS = [
 // 左側の固定ナビゲーション。開閉可能。ビュー（地図／カレンダー）を切り替える。
 // TODO: usePathname() で現在のルートを取得し、該当項目に active 用のスタイルを付与する実装が必要
 export default function Sidebar() {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <nav
@@ -68,6 +68,7 @@ export default function Sidebar() {
                 <Link
                     key={href}
                     href={href}
+                    title={label}
                     className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-800 ${isOpen ? "" : "justify-center"
                         }`}
                 >
