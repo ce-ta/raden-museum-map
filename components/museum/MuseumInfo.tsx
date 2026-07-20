@@ -33,11 +33,11 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
         <div className="bg-neutral-800 text-neutral-100 p-4 space-y-6 overflow-y-auto h-full">
             <div>
                 <h1 className="text-xl font-bold">{detail.name}</h1>
-                <p className="text-sm text-neutral-400">{detail.address}</p>
+                <p className="text-base text-neutral-100">{detail.address}</p>
             </div>
 
             <section>
-                <h2 className="text-sm font-semibold mb-2">公式サイト</h2>
+                <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-2">公式サイト</h2>
                 {detail.websiteUrl && (
                     <a
                         href={detail.websiteUrl}
@@ -51,17 +51,17 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
             </section>
 
             <section>
-                <h2 className="text-sm font-semibold mb-2">開館時間</h2>
-                <p className="text-sm text-neutral-400">{detail.openingHours}</p>
+                <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-2">開館時間</h2>
+                <p className="text-base text-neutral-100">{detail.openingHours}</p>
             </section>
 
             <section>
-                <h2 className="text-sm font-semibold mb-2">入場料</h2>
-                <p className="text-sm text-neutral-400">{detail.admissionFee}</p>
+                <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-2">入場料</h2>
+                <p className="text-base text-neutral-100">{detail.admissionFee}</p>
             </section>
 
             <section>
-                <h2 className="text-sm font-semibold mb-2">公式コラボ情報</h2>
+                <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-2">公式コラボ情報</h2>
                 {detail.collaborations.length === 0 ? (
                     <p className="text-sm text-neutral-500">コラボ情報はありません</p>
                 ) : (
@@ -69,7 +69,7 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
                         {detail.collaborations.map((c) => (
                             <li key={c.id}>
                                 <p className="font-medium">{c.title}</p>
-                                {c.description && <p className="text-sm text-neutral-400">{c.description}</p>}
+                                {c.description && <p className="text-base text-neutral-100">{c.description}</p>}
                                 <a href={c.sourceUrl} target="_blank" className="text-xs text-blue-400">出典</a>
                             </li>
                         ))}
@@ -79,7 +79,7 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
 
             <section className="space-y-3">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-semibold">投稿</h2>
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-400">投稿</h2>
                     {!isFormOpen && (
                         <button
                             type="button"
@@ -121,7 +121,7 @@ export default function MuseumInfo({ museumId }: { museumId: string | null }) {
                                 {r.photoUrl && (
                                     <img src={r.photoUrl} className="w-full rounded-md object-cover" />
                                 )}
-                                <p className="text-sm whitespace-pre-wrap">{r.body}</p>
+                                <p className="text-base whitespace-pre-wrap">{r.body}</p>
                             </li>
                         ))}
                     </ul>

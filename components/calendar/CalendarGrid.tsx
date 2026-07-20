@@ -19,7 +19,7 @@ function getWeekSegment(week: Date[], collab: Collaboration) {
     };
 }
 
-export default function CalendarGrid({ currentMonth, onSetCurrentMonth, collaborationsData }: { currentMonth: Date, onSetCurrentMonth: any, collaborationsData: Collaboration[] }) {
+export default function CalendarGrid({ currentMonth, onSetCurrentMonth, collaborationsData, onSelectCollabo }: { currentMonth: Date, onSetCurrentMonth: any, collaborationsData: Collaboration[], onSelectCollabo: any }) {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
     const gridStart = startOfWeek(monthStart, { weekStartsOn: 0 }); // 日曜始まり
@@ -89,7 +89,7 @@ export default function CalendarGrid({ currentMonth, onSetCurrentMonth, collabor
                                     <div
                                         key={dayIndex}
                                         className={`rounded-lg border border-neutral-700 p-2 text-sm ${inMonth
-                                            ? "bg-neutral-800 text-neutral-100 cursor-pointer hover:border-neutral-500"
+                                            ? "bg-neutral-800 text-neutral-100"
                                             : "bg-neutral-900 text-neutral-700"
                                             }`}
                                     >
@@ -108,6 +108,7 @@ export default function CalendarGrid({ currentMonth, onSetCurrentMonth, collabor
                                             className="pointer-events-auto flex items-center h-7 bg-white text-neutral-900 text-xs truncate rounded px-1"
                                             style={{ gridColumn: `${startCol + 1} / ${endCol + 2}`, gridRow: lane + 1 }}
                                             title={collab.title}
+                                            onClick={() => onSelectCollabo(collab.id)}
                                         >
                                             {collab.title}
                                         </div>

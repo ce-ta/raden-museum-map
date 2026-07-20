@@ -6,7 +6,7 @@ import MapLoader from "@/components/map/MapLoader";
 import type { FilterState, MuseumMapItem } from "@/types/museum";
 import { fetchFilterMuseums } from "@/lib/actions/museum";
 
-export default function MuseumMapClient({ museums: initialMuseums }: { museums: MuseumMapItem[] }) {
+export default function MuseumMapClient({ museums: initialMuseums, initialSelectedId }: { museums: MuseumMapItem[], initialSelectedId: string | null }) {
     const [museums, onSetMuseums] = useState<MuseumMapItem[]>(initialMuseums);
     const [isFetching, setIsFetching] = useState(false);
 
@@ -31,7 +31,7 @@ export default function MuseumMapClient({ museums: initialMuseums }: { museums: 
         <div className="flex flex-col h-full min-h-0">
             <Filter filterState={filterState} onChange={setFilterState} />
             <div className="flex-1 min-h-0">
-                <MapLoader museums={museums} isFetching={isFetching} />
+                <MapLoader museums={museums} isFetching={isFetching} initialSelectedId={initialSelectedId} />
             </div>
         </div>
     );

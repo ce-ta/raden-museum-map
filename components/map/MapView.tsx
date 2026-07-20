@@ -19,9 +19,9 @@ const JAPAN_BOUNDS: [[number, number], [number, number]] = [
   [46, 154],
 ];
 
-export default function MapView({ museums, isFetching }: { museums: MuseumMapItem[], isFetching: boolean }) {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [isList, setIsList] = useState(true);
+export default function MapView({ museums, isFetching, initialSelectedId }: { museums: MuseumMapItem[], isFetching: boolean, initialSelectedId: string | null }) {
+  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
+  const [isList, setIsList] = useState(!initialSelectedId);
 
   return (
     <div className="grid grid-cols-[2fr_1fr] h-full">

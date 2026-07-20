@@ -55,3 +55,10 @@ export async function getCollaborationsDate(): Promise<Collaboration[]> {
 
     return collaborations;
 }
+
+export function getCollaboDetail(id: string) {
+    return prisma.officialCollaboration.findUnique({
+        where: { id },
+        include: { museum: true },
+    });
+}
