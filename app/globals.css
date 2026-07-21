@@ -42,3 +42,12 @@ body {
   transform: scale(1.5);
 }
 
+.leaflet-fade-anim .museum-marker-tooltip.leaflet-tooltip {
+  transition: opacity 0.3s ease-in;
+}
+
+.museum-marker-tooltip.leaflet-tooltip {
+  border-radius: 6px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+  cursor: default;
+}

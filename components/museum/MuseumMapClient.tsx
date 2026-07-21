@@ -15,6 +15,7 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
         prefectureCode: null,
         hasCollaboration: true,
         hasNotCollaboration: true,
+        sortBy: 'name'
     });
 
     useEffect(() => {

@@ -11,6 +11,7 @@ type Prefecture = {
 
 export default function Filter({ filterState, onChange }: { filterState: FilterState, onChange: React.Dispatch<React.SetStateAction<FilterState>> }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSortOpen, setIsSortOpen] = useState(false);
     const [prefectureList, setPrefectureList] = useState<Prefecture[]>([]);
 
     useEffect(() => {
@@ -62,6 +63,47 @@ export default function Filter({ filterState, onChange }: { filterState: FilterS
                     </svg>
                     フィルター
                 </button>
+                <div className="relative">
+                    <button
+                        type="button"
+                        onClick={() => setIsSortOpen((prev) => !prev)}
+                        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm cursor-pointer transition-colors hover:border-neutral-400 hover:bg-neutral-800 ${isSortOpen ? "border-neutral-400 bg-neutral-800 text-neutral-100" : "border-neutral-600 bg-neutral-900 text-neutral-100"}`}
+                    >
+                        <svg
+                            className="w-4 h-4 text-neutral-300"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h10M3 12h6M3 18h3M17 4v16m0 0l-4-4m4 4l4-4" />
+                        </svg>
+                        並び替え
+                    </button>
+
+                    {isSortOpen && (
+                        <div className="absolute right-0 top-full mt-2 w-48 rounded-md border border-neutral-700 bg-neutral-900 shadow-lg z-[1000] p-1">
+                            <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
+                                <input
+                                    type="radio"
+                                    name="sort"
+                                    className="accent-neutral-400"
+                                    checked={filterState.sortBy === 'name'}
+                                    onChange={() => {
+                                        onChange((prev) => ({
+                                            ...prev,
+                                            sortBy: 'name'
+                                        }))
+                                    }} />
+                                名前順
+                            </label>
+                            <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
+                                <input type="radio" name="sort" className="accent-neutral-400" />
+                                現在地からの距離順
+                            </label>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {isOpen && (

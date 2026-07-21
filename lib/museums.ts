@@ -41,6 +41,7 @@ export function filterMuseums(filter: FilterState) {
                 hasCollaboration: hasCollaborationFilter,
             }),
         },
+        orderBy: filter.sortBy === "name" ? { name: "asc" } : undefined,
     });
 }
 

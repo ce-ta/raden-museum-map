@@ -1,7 +1,7 @@
 // 地図上に表示する美術館1件分のマーカーコンポーネント。
 
 import { useEffect, useRef } from "react";
-import { Marker, Popup, useMap } from "react-leaflet";
+import { Marker, useMap, Tooltip } from "react-leaflet";
 import type L from "leaflet";
 import type { MuseumMapItem } from "../../types/museum";
 import { museumIcon, collaboratedMuseumIcon } from "./museumIcon";
@@ -50,6 +50,7 @@ function MuseumMarkerItem({
     setIsList: any
 }) {
     const markerRef = useRef<L.Marker>(null);
+    const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         const el = markerRef.current?.getElement();
@@ -59,6 +60,45 @@ function MuseumMarkerItem({
             markerRef.current?.closePopup();
         }
     }, [isSelected]);
+
+    // Tooltipへカーソルを移動する間は閉じず、マーカー・Tooltipの両方から
+    // カーソルが離れたときだけ少し遅らせて閉じる
+    useEffect(() => {
+        const marker = markerRef.current;
+        if (!marker) return;
+
+        const clearCloseTimer = () => {
+            if (closeTimerRef.current) {
+                clearTimeout(closeTimerRef.current);
+                closeTimerRef.current = null;
+            }
+        };
+
+        const scheduleClose = () => {
+            clearCloseTimer();
+            closeTimerRef.current = setTimeout(() => {
+                marker.closeTooltip();
+            }, 150);
+        };
+
+        const handleMarkerOver = () => {
+            clearCloseTimer();
+            marker.openTooltip();
+            const tooltipEl = marker.getTooltip()?.getElement();
+            tooltipEl?.addEventListener("mouseenter", clearCloseTimer);
+            tooltipEl?.addEventListener("mouseleave", scheduleClose);
+        };
+
+        marker.off("mouseover mouseout");
+        marker.on("mouseover", handleMarkerOver);
+        marker.on("mouseout", scheduleClose);
+
+        return () => {
+            clearCloseTimer();
+            marker.off("mouseover", handleMarkerOver);
+            marker.off("mouseout", scheduleClose);
+        };
+    }, []);
 
     return (
         <Marker
@@ -72,13 +112,13 @@ function MuseumMarkerItem({
                 }
             }}
         >
-            <Popup interactive>
-                <strong>美術館名: {museum.name}</strong><br />
-                <button onClick={() => map.flyTo([museum.lat, museum.lng], 16, { duration: 0.3 })}>
-                    このあたりを見る
-                </button><br />
-                <a href={createGoogleMapUrl(museum.name, museum.address)} target="_blank">Google Mapで開く</a>
-            </Popup>
+            <Tooltip direction="top" offset={[0, -24]} opacity={1} interactive className="museum-marker-tooltip">
+                <div className="text-base">
+                    <p className="font-semibold">{museum.name}</p>
+                    <p className="text-neutral-500">{museum.address}</p>
+                    <a href={createGoogleMapUrl(museum.name, museum.address)} target="_blank" className="text-blue-700 underline">Google Mapで開く</a>
+                </div>
+            </Tooltip>
         </Marker>
     );
 }

@@ -18,7 +18,8 @@ export type FilterState = {
   searchText: string;
   prefectureCode: number | null;
   hasCollaboration: boolean;
-  hasNotCollaboration: boolean
+  hasNotCollaboration: boolean;
+  sortBy: 'name' | null;
 }
 
 export type Collaboration = {
