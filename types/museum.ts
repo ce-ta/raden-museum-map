@@ -19,7 +19,7 @@ export type FilterState = {
   prefectureCode: number | null;
   hasCollaboration: boolean;
   hasNotCollaboration: boolean;
-  sortBy: 'name' | null;
+  sortBy: 'name' | 'prefecture' | 'distance';
 }
 
 export type Collaboration = {

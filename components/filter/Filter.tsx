@@ -94,11 +94,38 @@ export default function Filter({ filterState, onChange }: { filterState: FilterS
                                             ...prev,
                                             sortBy: 'name'
                                         }))
-                                    }} />
+                                    }}
+                                />
                                 名前順
                             </label>
                             <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
-                                <input type="radio" name="sort" className="accent-neutral-400" />
+                                <input
+                                    type="radio"
+                                    name="sort"
+                                    className="accent-neutral-400"
+                                    checked={filterState.sortBy === 'prefecture'}
+                                    onChange={() => {
+                                        onChange((prev) => ({
+                                            ...prev,
+                                            sortBy: 'prefecture'
+                                        }))
+                                    }}
+                                />
+                                都道府県コード順
+                            </label>
+                            <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
+                                <input
+                                    type="radio"
+                                    name="sort"
+                                    className="accent-neutral-400"
+                                    checked={filterState.sortBy === 'distance'}
+                                    onChange={() => {
+                                        onChange((prev) => ({
+                                            ...prev,
+                                            sortBy: 'distance'
+                                        }))
+                                    }}
+                                />
                                 現在地からの距離順
                             </label>
                         </div>
