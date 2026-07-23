@@ -21,7 +21,7 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
     });
 
     useEffect(() => {
-        if (filterState.sortBy !== "distance" || userLocation) return;
+        if (userLocation) return;
         navigator.geolocation.getCurrentPosition(
             (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
             () => {
@@ -48,7 +48,7 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
         <div className="flex flex-col h-full min-h-0">
             <Filter filterState={filterState} onChange={setFilterState} />
             <div className="flex-1 min-h-0">
-                <MapLoader museums={displayMuseums} isFetching={isFetching} initialSelectedId={initialSelectedId} />
+                <MapLoader museums={displayMuseums} isFetching={isFetching} initialSelectedId={initialSelectedId} location={userLocation} />
             </div>
         </div>
     );

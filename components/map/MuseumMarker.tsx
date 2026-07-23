@@ -4,24 +4,37 @@ import { useEffect, useRef } from "react";
 import { Marker, useMap, Tooltip } from "react-leaflet";
 import type L from "leaflet";
 import type { MuseumMapItem } from "../../types/museum";
-import { museumIcon, collaboratedMuseumIcon } from "./museumIcon";
+import { museumIcon, collaboratedMuseumIcon, currentLocationIcon } from "./museumIcon";
 import { createGoogleMapUrl } from "@/lib/googleMaps";
 
 export default function MuseumMarker({
     museums,
     selectedId,
     onSelect,
-    setIsList
+    setIsList,
+    location,
+    isShowLocation
 }: {
     museums: MuseumMapItem[];
     selectedId: string | null;
     onSelect: (id: string) => void;
     setIsList: any;
+    location: { lat: number; lng: number } | null,
+    isShowLocation: boolean
 }) {
     const map = useMap();
+    console.log(location)
 
     return (
         <>
+            {(location && isShowLocation) && (
+                <Marker
+                    position={[location.lat, location.lng]}
+                    icon={currentLocationIcon}
+                    interactive={false}
+                    zIndexOffset={-1000}
+                />
+            )}
             {museums.map((museum) => (
                 <MuseumMarkerItem
                     key={museum.id}
