@@ -128,6 +128,35 @@ export default function Filter({ filterState, onChange }: { filterState: FilterS
                                 />
                                 現在地からの距離順
                             </label>
+
+                            <div className="my-1 border-t border-neutral-700" />
+
+                            <div className="flex gap-1 px-1 py-1">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        onChange((prev) => ({
+                                            ...prev,
+                                            sortOrder: 'asc'
+                                        }))
+                                    }}
+                                    className={`flex-1 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-colors ${filterState.sortOrder === 'asc' ? "bg-neutral-700 text-neutral-100" : "text-neutral-300 hover:bg-neutral-800"}`}
+                                >
+                                    昇順
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        onChange((prev) => ({
+                                            ...prev,
+                                            sortOrder: 'desc'
+                                        }))
+                                    }}
+                                    className={`flex-1 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-colors ${filterState.sortOrder === 'desc' ? "bg-neutral-700 text-neutral-100" : "text-neutral-300 hover:bg-neutral-800"}`}
+                                >
+                                    降順
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

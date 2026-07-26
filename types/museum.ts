@@ -20,6 +20,7 @@ export type FilterState = {
   hasCollaboration: boolean;
   hasNotCollaboration: boolean;
   sortBy: 'name' | 'prefecture' | 'distance';
+  sortOrder: 'asc' | 'desc';
 }
 
 export type Collaboration = {

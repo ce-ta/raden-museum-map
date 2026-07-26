@@ -17,11 +17,12 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
         prefectureCode: null,
         hasCollaboration: true,
         hasNotCollaboration: true,
-        sortBy: 'name'
+        sortBy: 'name',
+        sortOrder: 'asc'
     });
 
     useEffect(() => {
-        if (userLocation) return;
+        if (filterState.sortBy !== "distance" || userLocation) return;
         navigator.geolocation.getCurrentPosition(
             (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
             () => {

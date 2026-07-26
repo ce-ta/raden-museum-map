@@ -43,8 +43,8 @@ export function filterMuseums(filter: FilterState) {
         },
         orderBy: (() => {
             switch (filter.sortBy) {
-                case "name": return { name: "asc" as const };
-                case "prefecture": return { prefectureCode: "asc" as const };
+                case "name": return { name: filter.sortOrder };
+                case "prefecture": return { prefectureCode: filter.sortOrder };
                 default: return undefined;
             }
         })(),
