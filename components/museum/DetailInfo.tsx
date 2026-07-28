@@ -29,7 +29,7 @@ export default function DetailInfo({
                     <CollaboratedMuseumIcon className="w-6 h-8" />: <span>コラボあり</span>
                 </span>
                 <span className="flex items-center gap-2">
-                    <MuseumIcon className="w-6 h-8" />: <span>コラボなし</span>
+                    <MuseumIcon className="w-6 h-8" />: <span>コラボなし（紹介のみ）</span>
                 </span>
             </div>
             <div className="flex-1 flex flex-col min-h-0">

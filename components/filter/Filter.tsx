@@ -194,7 +194,7 @@ export default function Filter({ filterState, onChange }: { filterState: FilterS
                                         }))
                                     }}
                                 />
-                                コラボなし
+                                コラボなし（紹介のみ）
                             </label>
                         </div>
                     </div>

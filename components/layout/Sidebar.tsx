@@ -27,6 +27,18 @@ function CalendarIcon({ className }: { className?: string }) {
     );
 }
 
+function AdminIcon({ className }: { className?: string }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"
+            />
+        </svg>
+    );
+}
+
 function ChevronIcon({ className, direction }: { className?: string; direction: "left" | "right" }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -76,6 +88,16 @@ export default function Sidebar() {
                     {isOpen && <span className="truncate">{label}</span>}
                 </Link>
             ))}
+
+            <Link
+                href="/admin/login"
+                title="管理者"
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-neutral-100 hover:bg-neutral-800 ${isOpen ? "" : "justify-center"
+                    }`}
+            >
+                <AdminIcon className="w-5 h-5 shrink-0" />
+                {isOpen && <span className="truncate">管理者</span>}
+            </Link>
         </nav>
     );
 }
