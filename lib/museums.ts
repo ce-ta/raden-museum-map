@@ -52,7 +52,9 @@ export function filterMuseums(filter: FilterState) {
 }
 
 export function getCollaborations() {
-    return prisma.officialCollaboration.findMany();
+    return prisma.officialCollaboration.findMany({
+        include: { museum: true },
+    });
 }
 
 export async function getCollaborationsDate(): Promise<Collaboration[]> {

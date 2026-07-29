@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Content } from "@/types/admin"
-import type { MuseumMapItem, OfficialCollaborationItem } from "@/types/museum";
-import AdminItemFormModal from "@/components/admin/AdminItemFormModal";
+import type { MuseumMapItem, OfficialCollaborationWithMuseum } from "@/types/museum";
+import CollaborationFormModal from "@/components/admin/CollaborationFormModal";
 import MuseumFormModal from "@/components/admin/MuseumFormModal";
 import MuseumTable from "@/components/admin/MuseumTable";
 import CollaborationTable from "@/components/admin/CollaborationTable";
@@ -9,7 +9,7 @@ import { fetchMuseums, fetchCollaboration } from "@/lib/actions/museum";
 
 const TITLE_MAP: Record<Content, string> = {
     museum: "美術館一覧",
-    collaboration: "コラボ情報",
+    collaboration: "コラボ情報一覧",
 };
 
 type ModalState =
@@ -20,7 +20,7 @@ type ModalState =
 export default function AdminDashboardContent({ content }: { content: Content }) {
     const [modalState, setModalState] = useState<ModalState>(null);
     const [museums, setMuseums] = useState<MuseumMapItem[] | null>(null)
-    const [collaborations, setCollaborations] = useState<OfficialCollaborationItem[] | null>(null);
+    const [collaborations, setCollaborations] = useState<OfficialCollaborationWithMuseum[] | null>(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -66,9 +66,14 @@ export default function AdminDashboardContent({ content }: { content: Content })
             )}
 
             {modalState != null && content === "collaboration" && (
-                <AdminItemFormModal
+                <CollaborationFormModal
                     mode={modalState.mode}
-                    initialName={modalState.mode === "edit" ? modalState.name : undefined}
+                    initialCollaboration={
+                        modalState.mode === "edit"
+                            ? collaborations?.find((collaboration) => collaboration.title === modalState.name)
+                            : undefined
+                    }
+                    museums={museums}
                     onClose={() => setModalState(null)}
                 />
             )}

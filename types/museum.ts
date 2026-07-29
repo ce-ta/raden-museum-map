@@ -40,3 +40,10 @@ export type OfficialCollaborationItem = {
   startDate: Date | null;
   endDate: Date | null;
 }
+
+// OfficialCollaboration に紐づく Museum の名前を結合した型。
+export type OfficialCollaborationWithMuseum = OfficialCollaborationItem & {
+  museum: {
+    name: string;
+  };
+}
