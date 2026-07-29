@@ -51,6 +51,10 @@ export function filterMuseums(filter: FilterState) {
     });
 }
 
+export function getCollaborations() {
+    return prisma.officialCollaboration.findMany();
+}
+
 export async function getCollaborationsDate(): Promise<Collaboration[]> {
     const result = await prisma.officialCollaboration.findMany();
     const collaborations: Collaboration[] = result.map((r) => ({

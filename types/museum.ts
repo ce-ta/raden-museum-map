@@ -29,3 +29,14 @@ export type Collaboration = {
   startDate: Date | null;
   endDate: Date | null;
 }
+
+// OfficialCollaboration テーブルの全項目を持つ型。
+export type OfficialCollaborationItem = {
+  id: string;
+  museumId: string;
+  title: string;
+  description: string | null;
+  sourceUrl: string;
+  startDate: Date | null;
+  endDate: Date | null;
+}

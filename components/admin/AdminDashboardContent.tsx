@@ -1,10 +1,11 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Content } from "@/types/admin"
+import type { MuseumMapItem, OfficialCollaborationItem } from "@/types/museum";
 import AdminItemFormModal from "@/components/admin/AdminItemFormModal";
+import MuseumFormModal from "@/components/admin/MuseumFormModal";
 import MuseumTable from "@/components/admin/MuseumTable";
 import CollaborationTable from "@/components/admin/CollaborationTable";
+import { fetchMuseums, fetchCollaboration } from "@/lib/actions/museum";
 
 const TITLE_MAP: Record<Content, string> = {
     museum: "美術館一覧",
@@ -18,6 +19,18 @@ type ModalState =
 
 export default function AdminDashboardContent({ content }: { content: Content }) {
     const [modalState, setModalState] = useState<ModalState>(null);
+    const [museums, setMuseums] = useState<MuseumMapItem[] | null>(null)
+    const [collaborations, setCollaborations] = useState<OfficialCollaborationItem[] | null>(null);
+
+    useEffect(() => {
+        const loadData = async () => {
+            const resultMuseums = await fetchMuseums();
+            const resultCollaborations = await fetchCollaboration();
+            setMuseums(resultMuseums);
+            setCollaborations(resultCollaborations);
+        }
+        loadData();
+    }, [])
 
     return (
         <div>
@@ -34,13 +47,25 @@ export default function AdminDashboardContent({ content }: { content: Content })
 
             <div className="overflow-hidden rounded-xl border border-neutral-700">
                 {content === "museum" ? (
-                    <MuseumTable onEdit={(name) => setModalState({ mode: "edit", name })} />
+                    <MuseumTable museums={museums} onEdit={(name) => setModalState({ mode: "edit", name })} />
                 ) : (
-                    <CollaborationTable onEdit={(name) => setModalState({ mode: "edit", name })} />
+                    <CollaborationTable collaborations={collaborations} onEdit={(name) => setModalState({ mode: "edit", name })} />
                 )}
             </div>
 
-            {modalState != null && (
+            {modalState != null && content === "museum" && (
+                <MuseumFormModal
+                    mode={modalState.mode}
+                    initialMuseum={
+                        modalState.mode === "edit"
+                            ? museums?.find((museum) => museum.name === modalState.name)
+                            : undefined
+                    }
+                    onClose={() => setModalState(null)}
+                />
+            )}
+
+            {modalState != null && content === "collaboration" && (
                 <AdminItemFormModal
                     mode={modalState.mode}
                     initialName={modalState.mode === "edit" ? modalState.name : undefined}
