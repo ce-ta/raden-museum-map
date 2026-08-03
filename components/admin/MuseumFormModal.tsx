@@ -3,10 +3,16 @@ import type { MuseumMapItem } from "@/types/museum";
 type MuseumFormModalProps = {
     mode: "create" | "edit";
     initialMuseum?: MuseumMapItem;
+    onCreate: any;
     onClose: () => void;
 };
 
-export default function MuseumFormModal({ mode, initialMuseum, onClose }: MuseumFormModalProps) {
+export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose }: MuseumFormModalProps) {
+    function submit() {
+        const result = onCreate();
+        onClose();
+    }
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="max-h-[90vh] w-[32rem] overflow-y-auto rounded-xl border border-neutral-700 bg-neutral-900 p-6 text-neutral-100">
@@ -148,7 +154,7 @@ export default function MuseumFormModal({ mode, initialMuseum, onClose }: Museum
                         </button>
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={submit}
                             className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
                         >
                             保存

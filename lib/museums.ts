@@ -1,7 +1,7 @@
 // Museum に関するデータアクセス関数をまとめる場所。
 import { prisma } from "./prisma";
 import { FilterState } from "@/types/museum";
-import type { Collaboration } from "@/types/museum";
+import type { Collaboration, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
 
 export function getMuseums() {
     return prisma.museum.findMany();
@@ -73,5 +73,37 @@ export function getCollaboDetail(id: string) {
     return prisma.officialCollaboration.findUnique({
         where: { id },
         include: { museum: true },
+    });
+}
+
+export function addMuseum(
+    museum: NewMuseumInput,
+    collaboration?: NewCollaborationInput,
+) {
+    if (collaboration == null) {
+        return addMuseumOnly(museum);
+    } else {
+        return addMuseumWithCollaboration(museum, collaboration);
+    }
+}
+
+function addMuseumOnly(museum: NewMuseumInput) {
+    return prisma.museum.create({ data: museum });
+}
+
+// 美術館とコラボ情報を1トランザクションで同時作成する。
+// OfficialCollaboration.museumId は必須のため、美術館作成→そのidでコラボ作成の順で行う。
+function addMuseumWithCollaboration(
+    museum: NewMuseumInput,
+    collaboration: NewCollaborationInput,
+) {
+    return prisma.$transaction(async (tx) => {
+        const createdMuseum = await tx.museum.create({
+            data: { ...museum, hasCollaboration: true },
+        });
+        const createdCollaboration = await tx.officialCollaboration.create({
+            data: { ...collaboration, museumId: createdMuseum.id },
+        });
+        return { museum: createdMuseum, collaboration: createdCollaboration };
     });
 }

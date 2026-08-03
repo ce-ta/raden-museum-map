@@ -47,3 +47,26 @@ export type OfficialCollaborationWithMuseum = OfficialCollaborationItem & {
     name: string;
   };
 }
+
+export type NewMuseumInput = {
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  typeId: number;
+  prefectureCode: number;
+  websiteUrl?: string | null;
+  phone?: string | null;
+  openingHours?: string | null;
+  admissionFee?: string | null;
+  imageUrl?: string | null;
+  hasCollaboration?: boolean;
+};
+
+export type NewCollaborationInput = {
+  title: string;
+  description?: string | null;
+  sourceUrl: string;
+  startDate?: Date | null;
+  endDate?: Date | null;
+};

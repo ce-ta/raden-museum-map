@@ -5,7 +5,7 @@ import CollaborationFormModal from "@/components/admin/CollaborationFormModal";
 import MuseumFormModal from "@/components/admin/MuseumFormModal";
 import MuseumTable from "@/components/admin/MuseumTable";
 import CollaborationTable from "@/components/admin/CollaborationTable";
-import { fetchMuseums, fetchCollaboration } from "@/lib/actions/museum";
+import { fetchMuseums, fetchCollaboration, createMuseum } from "@/lib/actions/museum";
 
 const TITLE_MAP: Record<Content, string> = {
     museum: "美術館一覧",
@@ -61,6 +61,7 @@ export default function AdminDashboardContent({ content }: { content: Content })
                             ? museums?.find((museum) => museum.name === modalState.name)
                             : undefined
                     }
+                    onCreate={() => createMuseum}
                     onClose={() => setModalState(null)}
                 />
             )}
@@ -74,6 +75,7 @@ export default function AdminDashboardContent({ content }: { content: Content })
                             : undefined
                     }
                     museums={museums}
+                    onCreate={createMuseum}
                     onClose={() => setModalState(null)}
                 />
             )}
