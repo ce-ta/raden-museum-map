@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Content } from "@/types/admin"
-import type { MuseumMapItem, OfficialCollaborationWithMuseum } from "@/types/museum";
+import type { MuseumMapItem, OfficialCollaborationWithMuseum, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
 import CollaborationFormModal from "@/components/admin/CollaborationFormModal";
 import MuseumFormModal from "@/components/admin/MuseumFormModal";
 import MuseumTable from "@/components/admin/MuseumTable";
@@ -21,16 +21,29 @@ export default function AdminDashboardContent({ content }: { content: Content })
     const [modalState, setModalState] = useState<ModalState>(null);
     const [museums, setMuseums] = useState<MuseumMapItem[] | null>(null)
     const [collaborations, setCollaborations] = useState<OfficialCollaborationWithMuseum[] | null>(null);
+    const requestIdRef = useRef(0);
+
+    const loadData = async () => {
+        const requestId = ++requestIdRef.current;
+        const resultMuseums = await fetchMuseums();
+        const resultCollaborations = await fetchCollaboration();
+        if (requestId !== requestIdRef.current) return;
+        setMuseums(resultMuseums);
+        setCollaborations(resultCollaborations);
+    }
 
     useEffect(() => {
-        const loadData = async () => {
-            const resultMuseums = await fetchMuseums();
-            const resultCollaborations = await fetchCollaboration();
-            setMuseums(resultMuseums);
-            setCollaborations(resultCollaborations);
-        }
         loadData();
     }, [])
+
+    async function handleCreateMuseum(
+        museum: NewMuseumInput,
+        collaboration?: NewCollaborationInput
+    ) {
+        const result = await createMuseum(museum, collaboration);
+        await loadData();
+        return result;
+    }
 
     return (
         <div>
@@ -61,7 +74,7 @@ export default function AdminDashboardContent({ content }: { content: Content })
                             ? museums?.find((museum) => museum.name === modalState.name)
                             : undefined
                     }
-                    onCreate={() => createMuseum}
+                    onCreate={handleCreateMuseum}
                     onClose={() => setModalState(null)}
                 />
             )}
@@ -75,7 +88,7 @@ export default function AdminDashboardContent({ content }: { content: Content })
                             : undefined
                     }
                     museums={museums}
-                    onCreate={createMuseum}
+                    onCreate={handleCreateMuseum}
                     onClose={() => setModalState(null)}
                 />
             )}

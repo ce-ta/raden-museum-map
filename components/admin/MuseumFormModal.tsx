@@ -1,15 +1,94 @@
-import type { MuseumMapItem } from "@/types/museum";
+import { useState } from "react";
+import type { MuseumMapItem, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
 
 type MuseumFormModalProps = {
     mode: "create" | "edit";
     initialMuseum?: MuseumMapItem;
-    onCreate: any;
+    onCreate: (museum: NewMuseumInput, collaboration?: NewCollaborationInput) => Promise<unknown>;
     onClose: () => void;
 };
 
+type MuseumFormState = {
+    name: string;
+    address: string;
+    lat: string;
+    lng: string;
+    typeId: string;
+    prefectureCode: string;
+    websiteUrl: string;
+    phone: string;
+    openingHours: string;
+    admissionFee: string;
+    imageUrl: string;
+    hasCollaboration: boolean;
+};
+
+// 必須項目のキー一覧（バリデーション対象はここに追加/削除するだけでよい）
+const REQUIRED_FIELDS = ["name", "address", "lat", "lng", "typeId", "prefectureCode"] as const;
+
+type RequiredField = (typeof REQUIRED_FIELDS)[number];
+
+// フィールドごとのエラーメッセージを保持する型（未入力エラーがない項目はキー自体が存在しない）
+type FormErrors = Partial<Record<RequiredField, string>>;
+
 export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose }: MuseumFormModalProps) {
-    function submit() {
-        const result = onCreate();
+    const [form, setForm] = useState<MuseumFormState>({
+        name: initialMuseum?.name ?? "",
+        address: initialMuseum?.address ?? "",
+        lat: initialMuseum?.lat != null ? String(initialMuseum.lat) : "",
+        lng: initialMuseum?.lng != null ? String(initialMuseum.lng) : "",
+        typeId: initialMuseum?.typeId != null ? String(initialMuseum.typeId) : "",
+        prefectureCode: "",
+        websiteUrl: initialMuseum?.websiteUrl ?? "",
+        phone: initialMuseum?.phone ?? "",
+        openingHours: initialMuseum?.openingHours ?? "",
+        admissionFee: initialMuseum?.admissionFee ?? "",
+        imageUrl: initialMuseum?.imageUrl ?? "",
+        hasCollaboration: initialMuseum?.hasCollaboration ?? false,
+    });
+    // 必須項目ごとのエラーメッセージ。キーが存在する項目のみ入力欄の下に表示される
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    function updateField<K extends keyof MuseumFormState>(key: K, value: MuseumFormState[K]) {
+        setForm((prev) => ({ ...prev, [key]: value }));
+    }
+
+    // 必須項目が未入力（空文字、または空白のみ）かどうかをチェックし、
+    // 該当する項目のエラーメッセージをまとめて返す
+    function validate(): FormErrors {
+        const nextErrors: FormErrors = {};
+        for (const field of REQUIRED_FIELDS) {
+            if (form[field].trim() === "") {
+                nextErrors[field] = "この項目は必須です";
+            }
+        }
+        return nextErrors;
+    }
+
+    async function submit() {
+        // 保存前に必須項目をチェックし、エラーがあれば保存処理を中断してメッセージを表示する
+        const nextErrors = validate();
+        if (Object.keys(nextErrors).length > 0) {
+            setErrors(nextErrors);
+            return;
+        }
+        // バリデーションを通過したら前回表示していたエラーをクリアしてから保存に進む
+        setErrors({});
+        const museum: NewMuseumInput = {
+            name: form.name,
+            address: form.address,
+            lat: Number(form.lat),
+            lng: Number(form.lng),
+            typeId: Number(form.typeId),
+            prefectureCode: Number(form.prefectureCode),
+            websiteUrl: form.websiteUrl || null,
+            phone: form.phone || null,
+            openingHours: form.openingHours || null,
+            admissionFee: form.admissionFee || null,
+            imageUrl: form.imageUrl || null,
+            hasCollaboration: form.hasCollaboration,
+        };
+        await onCreate(museum);
         onClose();
     }
 
@@ -36,9 +115,11 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="text"
                             name="name"
-                            defaultValue={initialMuseum?.name}
+                            value={form.name}
+                            onChange={(e) => updateField("name", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
+                        {errors.name && <span className="text-xs text-red-400">{errors.name}</span>}
                     </label>
 
                     <label className="flex flex-col gap-1 text-sm">
@@ -46,9 +127,11 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="text"
                             name="address"
-                            defaultValue={initialMuseum?.address}
+                            value={form.address}
+                            onChange={(e) => updateField("address", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
+                        {errors.address && <span className="text-xs text-red-400">{errors.address}</span>}
                     </label>
 
                     <div className="flex gap-3">
@@ -58,9 +141,11 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                                 type="number"
                                 step="any"
                                 name="lat"
-                                defaultValue={initialMuseum?.lat}
+                                value={form.lat}
+                                onChange={(e) => updateField("lat", e.target.value)}
                                 className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                             />
+                            {errors.lat && <span className="text-xs text-red-400">{errors.lat}</span>}
                         </label>
                         <label className="flex flex-1 flex-col gap-1 text-sm">
                             経度
@@ -68,28 +153,48 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                                 type="number"
                                 step="any"
                                 name="lng"
-                                defaultValue={initialMuseum?.lng}
+                                value={form.lng}
+                                onChange={(e) => updateField("lng", e.target.value)}
                                 className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                             />
+                            {errors.lng && <span className="text-xs text-red-400">{errors.lng}</span>}
                         </label>
                     </div>
 
-                    <label className="flex flex-col gap-1 text-sm">
-                        種別ID
-                        <input
-                            type="number"
-                            name="typeId"
-                            defaultValue={initialMuseum?.typeId}
-                            className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                        />
-                    </label>
+                    <div className="flex gap-3">
+                        <label className="flex flex-1 flex-col gap-1 text-sm">
+                            種別ID
+                            <input
+                                type="number"
+                                name="typeId"
+                                value={form.typeId}
+                                onChange={(e) => updateField("typeId", e.target.value)}
+                                className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
+                            />
+                            {errors.typeId && <span className="text-xs text-red-400">{errors.typeId}</span>}
+                        </label>
+                        <label className="flex flex-1 flex-col gap-1 text-sm">
+                            都道府県コード
+                            <input
+                                type="number"
+                                name="prefectureCode"
+                                value={form.prefectureCode}
+                                onChange={(e) => updateField("prefectureCode", e.target.value)}
+                                className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
+                            />
+                            {errors.prefectureCode && (
+                                <span className="text-xs text-red-400">{errors.prefectureCode}</span>
+                            )}
+                        </label>
+                    </div>
 
                     <label className="flex flex-col gap-1 text-sm">
                         公式サイトURL
                         <input
                             type="text"
                             name="websiteUrl"
-                            defaultValue={initialMuseum?.websiteUrl ?? ""}
+                            value={form.websiteUrl}
+                            onChange={(e) => updateField("websiteUrl", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
                     </label>
@@ -99,7 +204,8 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="text"
                             name="phone"
-                            defaultValue={initialMuseum?.phone ?? ""}
+                            value={form.phone}
+                            onChange={(e) => updateField("phone", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
                     </label>
@@ -109,7 +215,8 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="text"
                             name="openingHours"
-                            defaultValue={initialMuseum?.openingHours ?? ""}
+                            value={form.openingHours}
+                            onChange={(e) => updateField("openingHours", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
                     </label>
@@ -119,7 +226,8 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="text"
                             name="admissionFee"
-                            defaultValue={initialMuseum?.admissionFee ?? ""}
+                            value={form.admissionFee}
+                            onChange={(e) => updateField("admissionFee", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
                     </label>
@@ -129,7 +237,8 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="text"
                             name="imageUrl"
-                            defaultValue={initialMuseum?.imageUrl ?? ""}
+                            value={form.imageUrl}
+                            onChange={(e) => updateField("imageUrl", e.target.value)}
                             className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
                         />
                     </label>
@@ -138,7 +247,8 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         <input
                             type="checkbox"
                             name="hasCollaboration"
-                            defaultChecked={initialMuseum?.hasCollaboration ?? false}
+                            checked={form.hasCollaboration}
+                            onChange={(e) => updateField("hasCollaboration", e.target.checked)}
                             className="h-4 w-4 rounded border-neutral-700 bg-neutral-800"
                         />
                         コラボ有無
@@ -154,7 +264,7 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         </button>
                         <button
                             type="button"
-                            onClick={submit}
+                            onClick={() => submit()}
                             className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
                         >
                             保存
