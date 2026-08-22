@@ -3,12 +3,10 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import { DomEvent } from "leaflet";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import MuseumMarker from "./MuseumMarker";
 import type { MuseumMapItem } from "@/types/museum";
-import DetailInfo from "../museum/DetailInfo";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 // 日本全体が収まる程度の初期中心座標・ズーム。
 const DEFAULT_CENTER: [number, number] = [36.2048, 138.2529];
@@ -20,38 +18,61 @@ const JAPAN_BOUNDS: [[number, number], [number, number]] = [
   [46, 154],
 ];
 
-export default function MapView({ museums, isFetching, initialSelectedId, location }: { museums: MuseumMapItem[], isFetching: boolean, initialSelectedId: string | null, location: { lat: number; lng: number } | null }) {
-  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
-  const [isList, setIsList] = useState(!initialSelectedId);
+function FitAllButton() {
+  const map = useMap();
+  return (
+    <button
+      type="button"
+      onClick={() => map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 0.7 })}
+      className="px-3 py-2 text-[12px] text-muted hover:bg-white/[.05] hover:text-ink cursor-pointer"
+    >
+      全体表示
+    </button>
+  );
+}
+
+export default function MapView({
+  museums,
+  selectedId,
+  onSelect,
+  location,
+}: {
+  museums: MuseumMapItem[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+  location: { lat: number; lng: number } | null;
+}) {
   const [showLocation, setShowLocation] = useState(false);
 
   return (
-    <div className="grid grid-cols-[2fr_1fr] h-full">
-      <MapContainer
-        center={DEFAULT_CENTER}
-        zoom={DEFAULT_ZOOM}
-        minZoom={6}
-        scrollWheelZoom
-        maxBounds={JAPAN_BOUNDS}
-        maxBoundsViscosity={1}
-        className="map-tone-muted h-full w-full"
-      >
-        <label className="absolute top-3 right-3 z-[1000] flex items-center gap-2 px-4 py-2.5 rounded-full border border-neutral-600 bg-neutral-900/90 text-base text-neutral-100 cursor-pointer">
+    <MapContainer
+      center={DEFAULT_CENTER}
+      zoom={DEFAULT_ZOOM}
+      minZoom={6}
+      scrollWheelZoom
+      maxBounds={JAPAN_BOUNDS}
+      maxBoundsViscosity={1}
+      className="map-tone-muted absolute inset-0"
+    >
+      <div className="pointer-events-none absolute left-0 right-0 top-0 z-[500] flex items-start justify-between gap-2 p-3 md:p-4">
+        <label className="pointer-events-auto flex items-center gap-2 border border-line bg-panel/90 px-3 py-2 text-[11px] tracking-[.1em] text-muted shadow-sm backdrop-blur cursor-pointer">
           <input
             type="checkbox"
-            className="accent-neutral-400 w-4 h-4"
+            className="accent-accent w-3.5 h-3.5"
             checked={showLocation}
             onChange={() => setShowLocation((prev) => !prev)}
           />
           現在地を表示する
         </label>
-        <TileLayer
-          attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'
-          url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
-        />
-        <MuseumMarker museums={museums} selectedId={selectedId} onSelect={setSelectedId} setIsList={setIsList} location={location} isShowLocation={showLocation} />
-      </MapContainer>
-      <DetailInfo museumId={selectedId} onSelect={setSelectedId} museums={museums} isList={isList} setIsList={setIsList} isFetching={isFetching} />
-    </div>
+        <div className="pointer-events-auto ml-auto flex overflow-hidden border border-line bg-panel shadow-sm">
+          <FitAllButton />
+        </div>
+      </div>
+      <TileLayer
+        attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'
+        url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+      />
+      <MuseumMarker museums={museums} selectedId={selectedId} onSelect={onSelect} location={location} isShowLocation={showLocation} />
+    </MapContainer>
   );
 }

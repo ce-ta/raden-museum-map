@@ -10,6 +10,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-noto-serif-jp), serif;
+
+  --color-paper: #0e0d0e;
+  --color-panel: #151415;
+  --color-line: #2b2829;
+  --color-ink: #f3f1ef;
+  --color-muted: #9b9698;
+  --color-faint: #948f92;
+  --color-accent: #b7a7e3;
+  --color-accent-soft: #251f36;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,6 +33,60 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3639 transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: #3a3639;
+  border-radius: 8px;
+}
+
+/* Leafletのデフォルト配色を、ギャラリーの落ち着いたトーンに合わせる */
+.leaflet-container {
+  background: #121113;
+  font-family: "Noto Sans JP", sans-serif;
+}
+.leaflet-control-attribution {
+  font-size: 10px;
+  color: #8b8688;
+  background: rgba(14, 13, 14, 0.8) !important;
+}
+.leaflet-control-attribution a {
+  color: #a49fa1 !important;
+}
+.leaflet-bar {
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+.leaflet-bar a {
+  border-radius: 0 !important;
+  background: #1b1a1b !important;
+  color: #f3f1ef !important;
+  border-bottom-color: #2b2829 !important;
+}
+.leaflet-bar a:hover {
+  background: #262425 !important;
+}
+
+/* 画像が無い箇所のプレースホルダー */
+.ph {
+  background: repeating-linear-gradient(45deg, #201e1f 0 6px, #282526 6px 12px);
+}
+
+.pin {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #b7a7e3;
+  border: 2.5px solid #0e0d0e;
+  box-shadow: 0 0 0 1px rgba(183, 167, 227, 0.35), 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 /* 地図タイルを他コンポーネントのシックなトーンに合わせて落ち着かせる */
@@ -47,7 +111,10 @@ body {
 }
 
 .museum-marker-tooltip.leaflet-tooltip {
-  border-radius: 6px;
-  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  background: #1a1819;
+  color: #f3f1ef;
+  border: 1px solid #2b2829;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
   cursor: default;
 }

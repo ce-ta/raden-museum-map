@@ -1,234 +1,121 @@
 "use client"
 
-import { useState, useEffect } from "react";
-import { fetchAllPrefecture } from "@/lib/actions/prefecture";
+import { useEffect, useState } from "react";
+import { fetchAllFacilityTypes } from "@/lib/actions/facilityType";
+import { REGIONS } from "@/lib/regions";
 import type { FilterState } from "@/types/museum";
 
-type Prefecture = {
-    code: number;
-    name: string
+type FacilityType = { id: number; name: string };
+
+const INITIAL_FILTER: FilterState = {
+    searchText: "",
+    regions: [],
+    typeIds: [],
+    hasCollaboration: true,
+    hasNotCollaboration: true,
+    sortBy: "name",
+    sortOrder: "asc",
+};
+
+function Chip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            aria-pressed={active}
+            className={`border px-2.5 py-1 text-[12px] transition-colors cursor-pointer ${active
+                ? "border-accent/70 bg-accent-soft text-accent"
+                : "border-line text-muted hover:border-ink/30 hover:text-ink"
+                }`}
+        >
+            {label}
+        </button>
+    );
 }
 
 export default function Filter({ filterState, onChange }: { filterState: FilterState, onChange: React.Dispatch<React.SetStateAction<FilterState>> }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isSortOpen, setIsSortOpen] = useState(false);
-    const [prefectureList, setPrefectureList] = useState<Prefecture[]>([]);
+    const [facilityTypes, setFacilityTypes] = useState<FacilityType[]>([]);
 
     useEffect(() => {
-        const load = async () => {
-            const result = await fetchAllPrefecture();
-            setPrefectureList(result);
-        }
-        load();
+        fetchAllFacilityTypes().then(setFacilityTypes);
     }, []);
 
+    const toggleRegion = (region: string) => {
+        onChange((prev) => ({
+            ...prev,
+            regions: prev.regions.includes(region)
+                ? prev.regions.filter((r) => r !== region)
+                : [...prev.regions, region],
+        }));
+    };
+
+    const toggleType = (typeId: number) => {
+        onChange((prev) => ({
+            ...prev,
+            typeIds: prev.typeIds.includes(typeId)
+                ? prev.typeIds.filter((t) => t !== typeId)
+                : [...prev.typeIds, typeId],
+        }));
+    };
+
     return (
-        <div className="border-b border-neutral-700 bg-neutral-800">
-            <div className="flex items-center gap-2 p-3">
-                <div className="relative flex-1">
-                    <svg
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <input
-                        type="text"
-                        placeholder="美術館を検索"
-                        className="w-full pl-9 pr-3 py-2 rounded-lg border border-neutral-600 bg-neutral-900 text-sm text-neutral-100 placeholder-neutral-500 outline-none focus:border-neutral-400"
-                        onChange={(e) => {
-                            onChange((prev) => ({
-                                ...prev,
-                                searchText: e.target.value,
-                            }))
-                        }}
-                    />
-                </div>
-                <button
-                    type="button"
-                    onClick={() => setIsOpen((prev) => !prev)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm cursor-pointer transition-colors hover:border-neutral-400 hover:bg-neutral-800 ${isOpen ? "border-neutral-400 bg-neutral-800 text-neutral-100" : "border-neutral-600 bg-neutral-900 text-neutral-100"}`}
-                >
-                    <svg
-                        className="w-4 h-4 text-neutral-300"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h18M6 8h12M10 12h4M11 16h2" />
-                    </svg>
-                    フィルター
-                </button>
-                <div className="relative">
-                    <button
-                        type="button"
-                        onClick={() => setIsSortOpen((prev) => !prev)}
-                        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm cursor-pointer transition-colors hover:border-neutral-400 hover:bg-neutral-800 ${isSortOpen ? "border-neutral-400 bg-neutral-800 text-neutral-100" : "border-neutral-600 bg-neutral-900 text-neutral-100"}`}
-                    >
-                        <svg
-                            className="w-4 h-4 text-neutral-300"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h10M3 12h6M3 18h3M17 4v16m0 0l-4-4m4 4l4-4" />
-                        </svg>
-                        並び替え
-                    </button>
-
-                    {isSortOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-48 rounded-md border border-neutral-700 bg-neutral-900 shadow-lg z-[1000] p-1">
-                            <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    className="accent-neutral-400"
-                                    checked={filterState.sortBy === 'name'}
-                                    onChange={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            sortBy: 'name'
-                                        }))
-                                    }}
-                                />
-                                名前順
-                            </label>
-                            <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    className="accent-neutral-400"
-                                    checked={filterState.sortBy === 'prefecture'}
-                                    onChange={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            sortBy: 'prefecture'
-                                        }))
-                                    }}
-                                />
-                                都道府県コード順
-                            </label>
-                            <label className="flex items-center gap-2 px-3 py-2 rounded-md text-sm text-neutral-100 cursor-pointer hover:bg-neutral-800">
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    className="accent-neutral-400"
-                                    checked={filterState.sortBy === 'distance'}
-                                    onChange={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            sortBy: 'distance'
-                                        }))
-                                    }}
-                                />
-                                現在地からの距離順
-                            </label>
-
-                            <div className="my-1 border-t border-neutral-700" />
-
-                            <div className="flex gap-1 px-1 py-1">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            sortOrder: 'asc'
-                                        }))
-                                    }}
-                                    className={`flex-1 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-colors ${filterState.sortOrder === 'asc' ? "bg-neutral-700 text-neutral-100" : "text-neutral-300 hover:bg-neutral-800"}`}
-                                >
-                                    昇順
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            sortOrder: 'desc'
-                                        }))
-                                    }}
-                                    className={`flex-1 px-3 py-1.5 rounded-md text-sm cursor-pointer transition-colors ${filterState.sortOrder === 'desc' ? "bg-neutral-700 text-neutral-100" : "text-neutral-300 hover:bg-neutral-800"}`}
-                                >
-                                    降順
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
+        <div className="border-b border-line px-4 pb-4 pt-4 md:px-6 md:pt-6">
+            <label htmlFor="q" className="mb-2 block text-[11px] tracking-[.14em] text-faint">キーワード</label>
+            <div className="flex items-center gap-2 border-b border-ink/20 pb-2 focus-within:border-accent">
+                <input
+                    id="q"
+                    type="search"
+                    placeholder="美術館名・地名で検索"
+                    value={filterState.searchText}
+                    onChange={(e) => onChange((prev) => ({ ...prev, searchText: e.target.value }))}
+                    className="w-full bg-transparent text-[15px] placeholder:text-faint focus:outline-none"
+                />
+                <span aria-hidden="true" className="text-[13px] text-faint">⌕</span>
             </div>
 
-            {isOpen && (
-                <div className="p-3 mb-3 rounded-md border-t border-neutral-700 bg-neutral-900 space-y-3">
-                    <div>
-                        <p className="text-xs text-neutral-400 mb-2">コラボあり/なし
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-600 bg-neutral-900 text-sm text-neutral-100 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="accent-neutral-400"
-                                    checked={filterState.hasCollaboration}
-                                    onChange={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            hasCollaboration: !prev.hasCollaboration
-                                        }))
-                                    }}
-                                />
-                                コラボあり
-                            </label>
-                            <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-neutral-600 bg-neutral-900 text-sm text-neutral-100 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="accent-neutral-400"
-                                    checked={filterState.hasNotCollaboration}
-                                    onChange={() => {
-                                        onChange((prev) => ({
-                                            ...prev,
-                                            hasNotCollaboration: !prev.hasNotCollaboration
-                                        }))
-                                    }}
-                                />
-                                コラボなし（紹介のみ）
-                            </label>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-xs text-neutral-400 mb-2">都道府県</p>
-                        <select
-                            className="w-full px-3 py-2 rounded-lg border border-neutral-600 bg-neutral-900 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                            value={filterState.prefectureCode ?? ""}
-                            onChange={(e) => {
-                                onChange((prev) => ({
-                                    ...prev,
-                                    prefectureCode: e.target.value === "" ? null : Number(e.target.value)
-                                }))
-                            }}
-                        >
-                            <option value="">すべて</option>
-                            {prefectureList.map((p) => (
-                                <option key={p.code} value={p.code}>{p.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="flex justify-end">
-                        <button
-                            type="button"
-                            className="px-3 py-1.5 rounded-lg text-sm text-neutral-400 cursor-pointer hover:text-neutral-100"
-                        >
-                            リセット
-                        </button>
-                    </div>
+            <fieldset className="mt-5">
+                <legend className="mb-2 text-[11px] tracking-[.14em] text-faint">地域</legend>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="地域で絞り込む">
+                    {REGIONS.map((region) => (
+                        <Chip key={region} label={region} active={filterState.regions.includes(region)} onClick={() => toggleRegion(region)} />
+                    ))}
                 </div>
-            )
-            }
-        </div >
-    )
+            </fieldset>
+
+            <fieldset className="mt-4">
+                <legend className="mb-2 text-[11px] tracking-[.14em] text-faint">種別</legend>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="種別で絞り込む">
+                    {facilityTypes.map((t) => (
+                        <Chip key={t.id} label={t.name} active={filterState.typeIds.includes(t.id)} onClick={() => toggleType(t.id)} />
+                    ))}
+                </div>
+            </fieldset>
+
+            <fieldset className="mt-4">
+                <legend className="mb-2 text-[11px] tracking-[.14em] text-faint">コラボ</legend>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-label="コラボの有無で絞り込む">
+                    <Chip
+                        label="コラボあり"
+                        active={filterState.hasCollaboration}
+                        onClick={() => onChange((prev) => ({ ...prev, hasCollaboration: !prev.hasCollaboration }))}
+                    />
+                    <Chip
+                        label="コラボなし（紹介のみ）"
+                        active={filterState.hasNotCollaboration}
+                        onClick={() => onChange((prev) => ({ ...prev, hasNotCollaboration: !prev.hasNotCollaboration }))}
+                    />
+                </div>
+            </fieldset>
+
+            <div className="mt-4 flex items-center justify-end">
+                <button
+                    type="button"
+                    onClick={() => onChange(INITIAL_FILTER)}
+                    className="text-[12px] text-muted underline decoration-line underline-offset-4 hover:text-ink cursor-pointer"
+                >
+                    条件をクリア
+                </button>
+            </div>
+        </div>
+    );
 }

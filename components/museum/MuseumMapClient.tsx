@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Filter from "@/components/filter/Filter";
+import MuseumList from "@/components/museum/MuseumList";
+import MuseumSummaryCard from "@/components/museum/MuseumSummaryCard";
 import MapLoader from "@/components/map/MapLoader";
 import type { FilterState, MuseumMapItem } from "@/types/museum";
 import { fetchFilterMuseums } from "@/lib/actions/museum";
@@ -11,10 +13,13 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
     const [museums, onSetMuseums] = useState<MuseumMapItem[]>(initialMuseums);
     const [isFetching, setIsFetching] = useState(false);
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
+    const [showMapMobile, setShowMapMobile] = useState(!!initialSelectedId);
 
     const [filterState, setFilterState] = useState<FilterState>({
         searchText: "",
-        prefectureCode: null,
+        regions: [],
+        typeIds: [],
         hasCollaboration: true,
         hasNotCollaboration: true,
         sortBy: 'name',
@@ -45,12 +50,56 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
         load();
     }, [filterState])
 
+    const handleSelect = (id: string) => {
+        setSelectedId(id);
+        setShowMapMobile(true);
+    };
+
     return (
-        <div className="flex flex-col h-full min-h-0">
-            <Filter filterState={filterState} onChange={setFilterState} />
-            <div className="flex-1 min-h-0">
-                <MapLoader museums={displayMuseums} isFetching={isFetching} initialSelectedId={initialSelectedId} location={userLocation} />
-            </div>
+        <div className="flex h-full flex-col md:flex-row">
+            <aside
+                id="panel"
+                className={`min-h-0 flex-1 flex-col border-line bg-panel md:flex md:w-[400px] md:flex-none md:border-r ${showMapMobile ? "hidden md:flex" : "flex"
+                    }`}
+            >
+                <Filter filterState={filterState} onChange={setFilterState} />
+                <MuseumList
+                    museums={displayMuseums}
+                    selectedId={selectedId}
+                    onSelect={handleSelect}
+                    isFetching={isFetching}
+                    filterState={filterState}
+                    onChange={setFilterState}
+                />
+            </aside>
+
+            <main className={`relative min-h-0 flex-1 ${showMapMobile ? "block" : "hidden md:block"}`}>
+                <MapLoader museums={displayMuseums} selectedId={selectedId} onSelect={handleSelect} location={userLocation} />
+
+                {selectedId && (
+                    <MuseumSummaryCard
+                        museumId={selectedId}
+                        onClose={() => setSelectedId(null)}
+                    />
+                )}
+
+                <div className="absolute bottom-4 left-1/2 z-[500] flex -translate-x-1/2 overflow-hidden border border-line bg-panel shadow-sm md:hidden">
+                    <button
+                        type="button"
+                        onClick={() => setShowMapMobile(false)}
+                        className={`px-4 py-2 text-[12px] cursor-pointer ${!showMapMobile ? "bg-accent text-[#17131f] font-medium" : "text-muted"}`}
+                    >
+                        一覧
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setShowMapMobile(true)}
+                        className={`border-l border-line px-4 py-2 text-[12px] cursor-pointer ${showMapMobile ? "bg-accent text-[#17131f] font-medium" : "text-muted"}`}
+                    >
+                        地図
+                    </button>
+                </div>
+            </main>
         </div>
     );
 }

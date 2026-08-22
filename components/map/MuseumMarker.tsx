@@ -11,19 +11,16 @@ export default function MuseumMarker({
     museums,
     selectedId,
     onSelect,
-    setIsList,
     location,
     isShowLocation
 }: {
     museums: MuseumMapItem[];
     selectedId: string | null;
     onSelect: (id: string) => void;
-    setIsList: any;
     location: { lat: number; lng: number } | null,
     isShowLocation: boolean
 }) {
     const map = useMap();
-    console.log(location)
 
     return (
         <>
@@ -41,7 +38,6 @@ export default function MuseumMarker({
                     museum={museum}
                     isSelected={museum.id === selectedId}
                     onSelect={onSelect}
-                    setIsList={setIsList}
                     map={map}
                 />
             ))}
@@ -54,13 +50,11 @@ function MuseumMarkerItem({
     isSelected,
     onSelect,
     map,
-    setIsList
 }: {
     museum: MuseumMapItem;
     isSelected: boolean;
     onSelect: (id: string) => void;
     map: L.Map;
-    setIsList: any
 }) {
     const markerRef = useRef<L.Marker>(null);
     const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -121,15 +115,14 @@ function MuseumMarkerItem({
             eventHandlers={{
                 click: () => {
                     onSelect(museum.id);
-                    setIsList(false);
                 }
             }}
         >
             <Tooltip direction="top" offset={[0, -24]} opacity={1} interactive className="museum-marker-tooltip">
-                <div className="text-base">
-                    <p className="font-semibold">{museum.name}</p>
-                    <p className="text-neutral-500">{museum.address}</p>
-                    <a href={createGoogleMapUrl(museum.name, museum.address)} target="_blank" className="text-blue-700 underline">Google Mapで開く</a>
+                <div className="p-1 text-[13px]">
+                    <p className="font-serif text-ink">{museum.name}</p>
+                    <p className="text-muted">{museum.address}</p>
+                    <a href={createGoogleMapUrl(museum.name, museum.address)} target="_blank" className="text-accent">Google Mapで開く</a>
                 </div>
             </Tooltip>
         </Marker>

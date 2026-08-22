@@ -6,20 +6,23 @@ export type MuseumMapItem = {
   lat: number;
   lng: number;
   typeId: number;
+  prefectureCode: number;
   websiteUrl: string | null;
   phone: string | null;
   openingHours: string | null;
   admissionFee: string | null;
   imageUrl: string | null;
   hasCollaboration: boolean;
+  reportCount: number;
 };
 
 export type FilterState = {
   searchText: string;
-  prefectureCode: number | null;
+  regions: string[];
+  typeIds: number[];
   hasCollaboration: boolean;
   hasNotCollaboration: boolean;
-  sortBy: 'name' | 'prefecture' | 'distance';
+  sortBy: 'name' | 'reports' | 'distance';
   sortOrder: 'asc' | 'desc';
 }
 

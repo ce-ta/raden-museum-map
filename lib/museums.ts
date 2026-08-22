@@ -2,9 +2,27 @@
 import { prisma } from "./prisma";
 import { FilterState } from "@/types/museum";
 import type { Collaboration, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
+import { REGIONS, regionOfPrefecture } from "./regions";
 
-export function getMuseums() {
-    return prisma.museum.findMany();
+// 地方名の配列を、該当する都道府県コードの配列に展開する。
+function regionsToCodes(regions: string[]): number[] {
+    const codes: number[] = [];
+    for (let code = 1; code <= 47; code++) {
+        if (regions.includes(regionOfPrefecture(code) ?? "")) codes.push(code);
+    }
+    return codes;
+}
+
+function withReportCount<T extends { _count: { reports: number } }>(museum: T) {
+    const { _count, ...rest } = museum;
+    return { ...rest, reportCount: _count.reports };
+}
+
+export async function getMuseums() {
+    const museums = await prisma.museum.findMany({
+        include: { _count: { select: { reports: true } } },
+    });
+    return museums.map(withReportCount);
 }
 
 export function getMuseumDetail(id: string) {
@@ -13,14 +31,16 @@ export function getMuseumDetail(id: string) {
         include: {
             collaborations: true,
             reports: true,
+            type: true,
+            prefecture: true,
         },
     });
 }
 
-export function filterMuseums(filter: FilterState) {
+export async function filterMuseums(filter: FilterState) {
     // 両方外す場合は該当なし（0件）にする
     if (!filter.hasCollaboration && !filter.hasNotCollaboration) {
-        return prisma.museum.findMany({ where: { id: { in: [] } } });
+        return [];
     }
 
     // 両方チェック → 絞り込みなし、片方だけ → その値で絞り込み
@@ -29,27 +49,38 @@ export function filterMuseums(filter: FilterState) {
             ? undefined
             : filter.hasCollaboration;
 
-    return prisma.museum.findMany({
+    const regionCodes = filter.regions.length > 0 ? regionsToCodes(filter.regions) : null;
+
+    const museums = await prisma.museum.findMany({
         where: {
             ...(filter.searchText && {
-                name: { contains: filter.searchText, mode: "insensitive" },
+                OR: [
+                    { name: { contains: filter.searchText, mode: "insensitive" } },
+                    { address: { contains: filter.searchText, mode: "insensitive" } },
+                ],
             }),
-            ...(filter.prefectureCode !== null && filter.prefectureCode !== undefined && {
-                prefectureCode: filter.prefectureCode,
+            ...(regionCodes !== null && {
+                prefectureCode: { in: regionCodes },
+            }),
+            ...(filter.typeIds.length > 0 && {
+                typeId: { in: filter.typeIds },
             }),
             ...(hasCollaborationFilter !== undefined && {
                 hasCollaboration: hasCollaborationFilter,
             }),
         },
-        orderBy: (() => {
-            switch (filter.sortBy) {
-                case "name": return { name: filter.sortOrder };
-                case "prefecture": return { prefectureCode: filter.sortOrder };
-                default: return undefined;
-            }
-        })(),
+        include: { _count: { select: { reports: true } } },
+        orderBy: filter.sortBy === "name" ? { name: filter.sortOrder } : undefined,
     });
+
+    const mapped = museums.map(withReportCount);
+    if (filter.sortBy === "reports") {
+        mapped.sort((a, b) => (filter.sortOrder === "asc" ? a.reportCount - b.reportCount : b.reportCount - a.reportCount));
+    }
+    return mapped;
 }
+
+export { REGIONS };
 
 export function getCollaborations() {
     return prisma.officialCollaboration.findMany({
