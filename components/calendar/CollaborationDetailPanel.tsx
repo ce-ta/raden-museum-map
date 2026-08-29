@@ -5,7 +5,7 @@
 import { format } from "date-fns";
 import type { OfficialCollaboration, Museum } from "@/app/generated/prisma/client";
 
-type CollaboDetail = OfficialCollaboration & { museum: Museum };
+export type CollaboDetail = OfficialCollaboration & { museum: Museum };
 
 export default function CollaborationDetailPanel({ detailCollabo, loading }: { detailCollabo: CollaboDetail | null, loading: boolean }) {
     return (

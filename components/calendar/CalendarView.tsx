@@ -1,19 +1,19 @@
 "use client"
 
 import CalendarGrid from "./CalendarGrid";
-import CollaborationDetailPanel from "./CollaborationDetailPanel";
+import CollaborationDetailPanel, { type CollaboDetail } from "./CollaborationDetailPanel";
 import { useState, useEffect } from "react";
 import type { Collaboration } from "@/types/museum";
 import { fetchCollaboDetail } from "@/lib/actions/museum";
 
-export default function CalendarView({ collaborationsData }) {
+export default function CalendarView({ collaborationsData }: { collaborationsData: Collaboration[] }) {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
 
     const [currentMonth, setCurrentMonth] = useState(new Date(year, month, 1));
     const [collaboId, setCollaboId] = useState<string | null>(null);
-    const [detailCollabo, setDetailCollabo] = useState<Collaboration | null>(null);
+    const [detailCollabo, setDetailCollabo] = useState<CollaboDetail | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {

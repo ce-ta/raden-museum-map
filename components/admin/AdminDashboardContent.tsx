@@ -88,7 +88,6 @@ export default function AdminDashboardContent({ content }: { content: Content })
                             : undefined
                     }
                     museums={museums}
-                    onCreate={handleCreateMuseum}
                     onClose={() => setModalState(null)}
                 />
             )}
