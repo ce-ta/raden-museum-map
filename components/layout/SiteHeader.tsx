@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 const NAV_ITEMS = [
-    { href: "/", label: "さがす" },
-    { href: "/calendar", label: "コラボ" },
+    { href: "/", label: "マップ" },
+    { href: "/calendar", label: "コラボカレンダー" },
 ];
 
 export default function SiteHeader() {
@@ -20,12 +20,12 @@ export default function SiteHeader() {
                     </Link>
                 ))}
             </nav>
-            <Link
+            {/* <Link
                 href="/admin/login"
                 className="ml-auto flex h-9 items-center gap-2 border border-line bg-panel px-3 text-[12px] text-muted hover:border-ink/30 hover:text-ink md:ml-0"
             >
                 管理者ログイン
-            </Link>
+            </Link> */}
         </header>
     );
 }

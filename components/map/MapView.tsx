@@ -18,19 +18,6 @@ const JAPAN_BOUNDS: [[number, number], [number, number]] = [
   [46, 154],
 ];
 
-function FitAllButton() {
-  const map = useMap();
-  return (
-    <button
-      type="button"
-      onClick={() => map.flyTo(DEFAULT_CENTER, DEFAULT_ZOOM, { duration: 0.7 })}
-      className="px-3 py-2 text-[12px] text-muted hover:bg-white/[.05] hover:text-ink cursor-pointer"
-    >
-      全体表示
-    </button>
-  );
-}
-
 export default function MapView({
   museums,
   selectedId,
@@ -54,7 +41,7 @@ export default function MapView({
       maxBoundsViscosity={1}
       className="map-tone-muted absolute inset-0"
     >
-      <div className="pointer-events-none absolute left-0 right-0 top-0 z-[500] flex items-start justify-between gap-2 p-3 md:p-4">
+      <div className="pointer-events-none absolute left-0 right-0 top-0 z-[500] flex items-start justify-end gap-2 p-3 md:p-4">
         <label className="pointer-events-auto flex items-center gap-2 border border-line bg-panel/90 px-3 py-2 text-[11px] tracking-[.1em] text-muted shadow-sm backdrop-blur cursor-pointer">
           <input
             type="checkbox"
@@ -64,9 +51,6 @@ export default function MapView({
           />
           現在地を表示する
         </label>
-        <div className="pointer-events-auto ml-auto flex overflow-hidden border border-line bg-panel shadow-sm">
-          <FitAllButton />
-        </div>
       </div>
       <TileLayer
         attribution='<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener noreferrer">国土地理院</a>'

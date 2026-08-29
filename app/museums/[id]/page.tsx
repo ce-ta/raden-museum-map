@@ -25,7 +25,7 @@ export default async function MuseumDetailPage({
     return (
         <div className="mx-auto max-w-[1180px] px-4 pb-24 md:px-8 h-full overflow-y-auto">
             <nav aria-label="パンくず" className="flex items-center gap-2 py-4 text-[11px] text-faint md:py-6">
-                <Link href="/" className="text-muted hover:text-ink">さがす</Link>
+                <Link href="/" className="text-muted hover:text-ink">マップ</Link>
                 <span>/</span>
                 <span className="text-muted">{museum.prefecture.name}</span>
                 <span>/</span>
@@ -150,7 +150,7 @@ export default async function MuseumDetailPage({
                                     rel="noopener noreferrer"
                                     className="flex-1 border border-line py-2 text-center text-[12px] text-muted hover:border-ink/30 hover:text-ink"
                                 >
-                                    経路案内
+                                    GoogleMapで開く
                                 </a>
                             </div>
                         </div>

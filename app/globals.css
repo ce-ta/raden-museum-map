@@ -79,16 +79,6 @@ body {
   background: repeating-linear-gradient(45deg, #201e1f 0 6px, #282526 6px 12px);
 }
 
-.pin {
-  display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: #b7a7e3;
-  border: 2.5px solid #0e0d0e;
-  box-shadow: 0 0 0 1px rgba(183, 167, 227, 0.35), 0 2px 6px rgba(0, 0, 0, 0.6);
-}
-
 /* 地図タイルを他コンポーネントのシックなトーンに合わせて落ち着かせる */
 .map-tone-muted .leaflet-tile-pane {
   filter: brightness(0.9) saturate(0.7) contrast(1.05);
@@ -100,6 +90,7 @@ body {
 .museum-marker-inner {
   transition: transform 0.15s ease-out;
   transform-origin: bottom center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .museum-marker-icon.museum-marker-selected .museum-marker-inner {

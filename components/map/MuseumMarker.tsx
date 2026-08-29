@@ -118,7 +118,7 @@ function MuseumMarkerItem({
                 }
             }}
         >
-            <Tooltip direction="top" offset={[0, -24]} opacity={1} interactive className="museum-marker-tooltip">
+            <Tooltip direction="top" offset={[0, -34]} opacity={1} interactive className="museum-marker-tooltip">
                 <div className="p-1 text-[13px]">
                     <p className="font-serif text-ink">{museum.name}</p>
                     <p className="text-muted">{museum.address}</p>
