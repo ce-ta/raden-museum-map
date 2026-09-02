@@ -1,7 +1,7 @@
 // Museum に関するデータアクセス関数をまとめる場所。
 import { prisma } from "./prisma";
 import { FilterState } from "@/types/museum";
-import type { Collaboration, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
+import type { Collaboration, NewMuseumInput, NewCollaborationInput, MuseumMapItem } from "@/types/museum";
 import { REGIONS, regionOfPrefecture } from "./regions";
 
 // 地方名の配列を、該当する都道府県コードの配列に展開する。
@@ -40,6 +40,14 @@ export function getMuseumDetail(id: string) {
 export async function filterMuseums(filter: FilterState) {
     // 両方外す場合は該当なし（0件）にする
     if (!filter.hasCollaboration && !filter.hasNotCollaboration) {
+        return [];
+    }
+
+    if (filter.typeIds.length === 0) {
+        return [];
+    }
+
+    if (filter.regions.length === 0) {
         return [];
     }
 
@@ -107,6 +115,24 @@ export function getCollaboDetail(id: string) {
     });
 }
 
+export function addCollaboration(collaboration: NewCollaborationInput) {
+    return prisma.officialCollaboration.create({ data: collaboration });
+}
+
+export function updateCollaboration(collaboration: NewCollaborationInput) {
+    const { collaborationId: id, ...data } = collaboration;
+    return prisma.officialCollaboration.update({
+        where: { id },
+        data,
+    });
+}
+
+export async function deleteCollaboration(id: string) {
+    return prisma.officialCollaboration.delete({
+        where: { id }
+    });
+}
+
 export function addMuseum(
     museum: NewMuseumInput,
     collaboration?: NewCollaborationInput,
@@ -116,6 +142,20 @@ export function addMuseum(
     } else {
         return addMuseumWithCollaboration(museum, collaboration);
     }
+}
+
+export function updateMuseumRecord(museum: MuseumMapItem) {
+    const { id, ...data } = museum;
+    return prisma.museum.update({
+        where: { id },
+        data
+    })
+}
+
+export function removeMuseum(id: string) {
+    return prisma.museum.delete({
+        where: { id }
+    });
 }
 
 function addMuseumOnly(museum: NewMuseumInput) {

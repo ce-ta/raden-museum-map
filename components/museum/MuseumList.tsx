@@ -78,7 +78,7 @@ export default function MuseumList({
                                         <span className="mt-1 block truncate font-serif text-[15px] text-ink">{museum.name}</span>
                                         <span className="mt-1.5 block text-[11px] text-muted">
                                             {museum.hasCollaboration ? "コラボあり" : "コラボなし（紹介のみ）"}
-                                            <span className="text-faint"> ・感想 {museum.reportCount}件</span>
+                                            {/* <span className="text-faint"> ・感想 {museum.reportCount}件</span> */}
                                         </span>
                                         {museum.openingHours && (
                                             <span className="mt-1 block text-[11px] text-muted">{museum.openingHours}</span>

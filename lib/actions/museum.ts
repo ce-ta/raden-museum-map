@@ -2,8 +2,8 @@
 
 import { FilterState } from "@/types/museum";
 import { getMuseumDetail, filterMuseums, getMuseums } from "../museums"
-import { getCollaboDetail, getCollaborations, addMuseum } from "../museums";
-import type { NewMuseumInput, NewCollaborationInput } from "@/types/museum";
+import { getCollaboDetail, getCollaborations, addMuseum, updateMuseumRecord, removeMuseum } from "../museums";
+import type { NewMuseumInput, NewCollaborationInput, MuseumMapItem } from "@/types/museum";
 
 export async function fetchMuseums() {
     return getMuseums();
@@ -43,7 +43,7 @@ function validateMuseum(museum: NewMuseumInput) {
     }
 }
 
-function validateCollaboration(collaboration: NewCollaborationInput) {
+export async function validateCollaboration(collaboration: NewCollaborationInput) {
     const missing: string[] = [];
     if (isBlank(collaboration.title)) missing.push("コラボ名");
     if (isBlank(collaboration.sourceUrl)) missing.push("リンク");
@@ -63,4 +63,14 @@ export async function createMuseum(
     }
 
     return addMuseum(museum, collaboration)
+}
+
+export async function updateMuseum(museum: MuseumMapItem) {
+    validateMuseum(museum);
+
+    return updateMuseumRecord(museum);
+}
+
+export async function deleteMuseum(id: string) {
+    return removeMuseum(id)
 }

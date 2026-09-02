@@ -1,10 +1,14 @@
 import { useState } from "react";
 import type { MuseumMapItem, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
+import CollaborationFields from "./CollaborationFields";
 
 type MuseumFormModalProps = {
     mode: "create" | "edit";
     initialMuseum?: MuseumMapItem;
+    facilityTypes: { id: number, name: string }[];
+    prefectures: { name: string, code: number }[];
     onCreate: (museum: NewMuseumInput, collaboration?: NewCollaborationInput) => Promise<unknown>;
+    onUpdate: (museum: MuseumMapItem) => Promise<unknown>;
     onClose: () => void;
 };
 
@@ -23,6 +27,16 @@ type MuseumFormState = {
     hasCollaboration: boolean;
 };
 
+type CollabotrationFormState = {
+    title: string;
+    description: string;
+    sourceUrl: string;
+    startDate: Date;
+    endDate: Date;
+}
+
+type FormState = MuseumFormState & Partial<CollabotrationFormState>;
+
 // 必須項目のキー一覧（バリデーション対象はここに追加/削除するだけでよい）
 const REQUIRED_FIELDS = ["name", "address", "lat", "lng", "typeId", "prefectureCode"] as const;
 
@@ -31,14 +45,14 @@ type RequiredField = (typeof REQUIRED_FIELDS)[number];
 // フィールドごとのエラーメッセージを保持する型（未入力エラーがない項目はキー自体が存在しない）
 type FormErrors = Partial<Record<RequiredField, string>>;
 
-export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose }: MuseumFormModalProps) {
-    const [form, setForm] = useState<MuseumFormState>({
+export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, prefectures, onCreate, onUpdate, onClose }: MuseumFormModalProps) {
+    const [form, setForm] = useState<FormState>({
         name: initialMuseum?.name ?? "",
         address: initialMuseum?.address ?? "",
         lat: initialMuseum?.lat != null ? String(initialMuseum.lat) : "",
         lng: initialMuseum?.lng != null ? String(initialMuseum.lng) : "",
         typeId: initialMuseum?.typeId != null ? String(initialMuseum.typeId) : "",
-        prefectureCode: "",
+        prefectureCode: initialMuseum?.prefectureCode != null ? String(initialMuseum.prefectureCode) : "",
         websiteUrl: initialMuseum?.websiteUrl ?? "",
         phone: initialMuseum?.phone ?? "",
         openingHours: initialMuseum?.openingHours ?? "",
@@ -46,10 +60,11 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
         imageUrl: initialMuseum?.imageUrl ?? "",
         hasCollaboration: initialMuseum?.hasCollaboration ?? false,
     });
+
     // 必須項目ごとのエラーメッセージ。キーが存在する項目のみ入力欄の下に表示される
     const [errors, setErrors] = useState<FormErrors>({});
 
-    function updateField<K extends keyof MuseumFormState>(key: K, value: MuseumFormState[K]) {
+    function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
         setForm((prev) => ({ ...prev, [key]: value }));
     }
 
@@ -74,7 +89,7 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
         }
         // バリデーションを通過したら前回表示していたエラーをクリアしてから保存に進む
         setErrors({});
-        const museum: NewMuseumInput = {
+        const museum: NewMuseumInput & Partial<NewCollaborationInput> = {
             name: form.name,
             address: form.address,
             lat: Number(form.lat),
@@ -87,8 +102,42 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
             admissionFee: form.admissionFee || null,
             imageUrl: form.imageUrl || null,
             hasCollaboration: form.hasCollaboration,
+            title: form.title,
+            description: form.description,
+            sourceUrl: form.sourceUrl,
+            startDate: form.startDate,
+            endDate: form.endDate
         };
         await onCreate(museum);
+        onClose();
+    }
+
+    async function handleUpdate() {
+        if (!initialMuseum) return;
+
+        const nextErrors = validate();
+        if (Object.keys(nextErrors).length > 0) {
+            setErrors(nextErrors);
+            return;
+        }
+
+        setErrors({});
+        const museum: MuseumMapItem = {
+            id: initialMuseum.id,
+            name: form.name,
+            address: form.address,
+            lat: Number(form.lat),
+            lng: Number(form.lng),
+            typeId: Number(form.typeId),
+            prefectureCode: Number(form.prefectureCode),
+            websiteUrl: form.websiteUrl || null,
+            phone: form.phone || null,
+            openingHours: form.openingHours || null,
+            admissionFee: form.admissionFee || null,
+            imageUrl: form.imageUrl || null,
+            hasCollaboration: form.hasCollaboration
+        };
+        await onUpdate(museum);
         onClose();
     }
 
@@ -164,24 +213,32 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                     <div className="flex gap-3">
                         <label className="flex flex-1 flex-col gap-1 text-sm">
                             種別ID
-                            <input
-                                type="number"
+                            <select
                                 name="typeId"
                                 value={form.typeId}
                                 onChange={(e) => updateField("typeId", e.target.value)}
                                 className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                            />
+                            >
+                                <option value="" disabled>選択してください</option>
+                                {facilityTypes.map((f) => (
+                                    <option key={f.id} value={f.id}>{f.name}</option>
+                                ))}
+                            </select>
                             {errors.typeId && <span className="text-xs text-red-400">{errors.typeId}</span>}
                         </label>
                         <label className="flex flex-1 flex-col gap-1 text-sm">
                             都道府県コード
-                            <input
-                                type="number"
+                            <select
                                 name="prefectureCode"
                                 value={form.prefectureCode}
                                 onChange={(e) => updateField("prefectureCode", e.target.value)}
                                 className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                            />
+                            >
+                                <option value="" disabled>選択してください</option>
+                                {prefectures.map((p) => (
+                                    <option key={p.code} value={p.code}>{p.name}</option>
+                                ))}
+                            </select>
                             {errors.prefectureCode && (
                                 <span className="text-xs text-red-400">{errors.prefectureCode}</span>
                             )}
@@ -243,16 +300,22 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         />
                     </label>
 
-                    <label className="flex items-center gap-2 text-sm">
-                        <input
-                            type="checkbox"
-                            name="hasCollaboration"
-                            checked={form.hasCollaboration}
-                            onChange={(e) => updateField("hasCollaboration", e.target.checked)}
-                            className="h-4 w-4 rounded border-neutral-700 bg-neutral-800"
-                        />
-                        コラボ有無
-                    </label>
+                    {mode === "create" && (
+                        <label className="flex items-center gap-2 text-sm">
+                            <input
+                                type="checkbox"
+                                name="hasCollaboration"
+                                checked={form.hasCollaboration}
+                                onChange={(e) => updateField("hasCollaboration", e.target.checked)}
+                                className="h-4 w-4 rounded border-neutral-700 bg-neutral-800"
+                            />
+                            コラボ有無
+                        </label>
+                    )}
+
+                    {mode === 'create' && form.hasCollaboration && (
+                        <CollaborationFields onChange={updateField} />
+                    )}
 
                     <div className="mt-2 flex justify-end gap-2">
                         <button
@@ -262,13 +325,23 @@ export default function MuseumFormModal({ mode, initialMuseum, onCreate, onClose
                         >
                             キャンセル
                         </button>
-                        <button
-                            type="button"
-                            onClick={() => submit()}
-                            className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
-                        >
-                            保存
-                        </button>
+                        {mode === 'create' ? (
+                            <button
+                                type="button"
+                                onClick={() => submit()}
+                                className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
+                            >
+                                作成
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => handleUpdate()}
+                                className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
+                            >
+                                更新
+                            </button>
+                        )}
                     </div>
                 </form>
             </div>

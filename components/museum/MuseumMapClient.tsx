@@ -8,6 +8,7 @@ import MapLoader from "@/components/map/MapLoader";
 import type { FilterState, MuseumMapItem } from "@/types/museum";
 import { fetchFilterMuseums } from "@/lib/actions/museum";
 import { distanceKm } from "@/lib/geo";
+import { REGIONS } from "@/lib/regions";
 
 export default function MuseumMapClient({ museums: initialMuseums, initialSelectedId }: { museums: MuseumMapItem[], initialSelectedId: string | null }) {
     const [museums, onSetMuseums] = useState<MuseumMapItem[]>(initialMuseums);
@@ -18,8 +19,8 @@ export default function MuseumMapClient({ museums: initialMuseums, initialSelect
 
     const [filterState, setFilterState] = useState<FilterState>({
         searchText: "",
-        regions: [],
-        typeIds: [],
+        regions: [...REGIONS],
+        typeIds: [1, 2],
         hasCollaboration: true,
         hasNotCollaboration: true,
         sortBy: 'name',

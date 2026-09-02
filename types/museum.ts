@@ -1,24 +1,13 @@
+import type { Region } from "@/lib/regions";
+
 // 地図表示に必要な最小限のフィールドのみを持つ型。
-export type MuseumMapItem = {
+export type MuseumMapItem = NewMuseumInput & {
   id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  typeId: number;
-  prefectureCode: number;
-  websiteUrl: string | null;
-  phone: string | null;
-  openingHours: string | null;
-  admissionFee: string | null;
-  imageUrl: string | null;
-  hasCollaboration: boolean;
-  reportCount: number;
 };
 
 export type FilterState = {
   searchText: string;
-  regions: string[];
+  regions: Region[];
   typeIds: number[];
   hasCollaboration: boolean;
   hasNotCollaboration: boolean;
@@ -72,4 +61,6 @@ export type NewCollaborationInput = {
   sourceUrl: string;
   startDate?: Date | null;
   endDate?: Date | null;
+  museumId: string;
+  collaborationId?: string;
 };

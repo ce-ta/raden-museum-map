@@ -155,26 +155,6 @@ export default async function MuseumDetailPage({
                             </div>
                         </div>
                     </div>
-
-                    {nearby.length > 0 && (
-                        <>
-                            <h2 className="mt-8 mb-3 text-[11px] tracking-[.14em] text-faint">近くの美術館</h2>
-                            <ul className="divide-y divide-line border-y border-line text-[13px]">
-                                {nearby.map((m) => (
-                                    <li key={m.id} className="flex items-center justify-between py-3">
-                                        <Link href={`/museums/${m.id}`} className="text-ink hover:text-accent truncate">
-                                            {m.name}
-                                        </Link>
-                                        <span className="shrink-0 pl-3 text-[11px] text-faint">
-                                            {m.distance < 1
-                                                ? `${Math.round(m.distance * 1000)}m`
-                                                : `${m.distance.toFixed(1)}km`}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </>
-                    )}
                 </aside>
             </div>
 

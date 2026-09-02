@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { fetchAllFacilityTypes } from "@/lib/actions/facilityType";
-import { REGIONS } from "@/lib/regions";
+import { REGIONS, type Region } from "@/lib/regions";
 import type { FilterState } from "@/types/museum";
 
 type FacilityType = { id: number; name: string };
 
 const INITIAL_FILTER: FilterState = {
     searchText: "",
-    regions: [],
-    typeIds: [],
+    regions: [...REGIONS],
+    typeIds: [1, 2],
     hasCollaboration: true,
     hasNotCollaboration: true,
     sortBy: "name",
@@ -40,7 +40,7 @@ export default function Filter({ filterState, onChange }: { filterState: FilterS
         fetchAllFacilityTypes().then(setFacilityTypes);
     }, []);
 
-    const toggleRegion = (region: string) => {
+    const toggleRegion = (region: Region) => {
         onChange((prev) => ({
             ...prev,
             regions: prev.regions.includes(region)
@@ -70,7 +70,10 @@ export default function Filter({ filterState, onChange }: { filterState: FilterS
                     onChange={(e) => onChange((prev) => ({ ...prev, searchText: e.target.value }))}
                     className="w-full bg-transparent text-[15px] placeholder:text-faint focus:outline-none"
                 />
-                <span aria-hidden="true" className="text-[13px] text-faint">⌕</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6 text-faint" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
             </div>
 
             <fieldset className="mt-5">

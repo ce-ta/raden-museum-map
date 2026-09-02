@@ -1,6 +1,6 @@
 import type { MuseumMapItem } from "@/types/museum";
 
-export default function MuseumTable({ museums, onEdit }: { museums: MuseumMapItem[] | null, onEdit: (name: string) => void }) {
+export default function MuseumTable({ museums, onEdit, onDelete }: { museums: MuseumMapItem[] | null, onEdit: (id: string) => void, onDelete: (id: string) => void }) {
     if (museums === null) {
         return <p className="px-4 py-3 text-sm text-neutral-400">読み込み中...</p>;
     }
@@ -41,13 +41,14 @@ export default function MuseumTable({ museums, onEdit }: { museums: MuseumMapIte
                         <td className="px-4 py-3 text-right">
                             <button
                                 type="button"
-                                onClick={() => onEdit(museum.name)}
+                                onClick={() => onEdit(museum.id)}
                                 className="cursor-pointer rounded px-2 py-1 text-neutral-300 hover:bg-neutral-800 hover:text-neutral-100"
                             >
                                 編集
                             </button>
                             <button
                                 type="button"
+                                onClick={() => onDelete(museum.id)}
                                 className="cursor-pointer rounded px-2 py-1 text-red-400 hover:bg-neutral-800 hover:text-red-300"
                             >
                                 削除
