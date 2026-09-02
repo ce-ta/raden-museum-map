@@ -80,3 +80,12 @@ enum ReportStatus {
   PUBLISHED // 審査済み、公開中
   HIDDEN    // 非公開（不適切な投稿など）
 }
+
+/// 管理者アカウント（管理画面ログイン用）
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  updatedAt    DateTime @updatedAt   // PW変更日時が分かるように
+  createdAt    DateTime @default(now())
+}
