@@ -22,4 +22,4 @@ export default function proxy(req: NextRequest) {
 // このマッチャに該当するURLでのみproxyを実行する（/adminとその配下すべて）
 export const config = { matcher: ["/admin/:path*"] };
 
-// TODO 総当たり攻撃への対策と、/adminページでのすべてのやり取りでセッションを確認する
+// TODO 総当たり攻撃への対策

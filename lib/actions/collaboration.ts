@@ -1,20 +1,11 @@
 "use server"
 
-import { validateCollaboration } from "./museum"
-import type { NewCollaborationInput } from "@/types/museum"
-import { addCollaboration, updateCollaboration, deleteCollaboration } from "../museums";
+import { getCollaboDetail, getCollaborations } from "../museums";
 
-
-export async function addCollabo(collaboration: NewCollaborationInput) {
-    await validateCollaboration(collaboration);
-    return await addCollaboration(collaboration);
+export async function fetchCollaboration() {
+    return getCollaborations();
 }
 
-export async function updateCollabo(collaboration: NewCollaborationInput) {
-    await validateCollaboration(collaboration);
-    return updateCollaboration(collaboration);
-}
-
-export async function deleteCollabo(id: string) {
-    return deleteCollaboration(id);
+export async function fetchCollaboDetail(id: string) {
+    return getCollaboDetail(id);
 }

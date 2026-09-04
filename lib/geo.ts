@@ -1,4 +1,5 @@
 // Haversine公式で2地点間の直線距離(km)を求める(地球を半径6371kmの球とみなす近似計算)
+
 export function distanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
     const R = 6371;
     const dLat = (b.lat - a.lat) * Math.PI / 180;

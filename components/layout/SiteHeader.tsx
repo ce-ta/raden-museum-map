@@ -1,11 +1,15 @@
 import Link from "next/link";
+import { requiredAdmin } from "@/lib/actions/sessions";
+import { logout } from "@/lib/actions/login";
 
 const NAV_ITEMS = [
     { href: "/", label: "マップ" },
     { href: "/calendar", label: "コラボカレンダー" },
 ];
 
-export default function SiteHeader() {
+export default async function SiteHeader() {
+    const session = await requiredAdmin();
+
     return (
         <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-line bg-paper/95 px-4 backdrop-blur md:h-16 md:px-6">
             <Link href="/" className="flex items-baseline gap-2 text-ink hover:text-ink">
@@ -20,12 +24,35 @@ export default function SiteHeader() {
                     </Link>
                 ))}
             </nav>
-            <Link
-                href="/admin/login"
-                className="ml-auto flex h-9 items-center gap-2 border border-line bg-panel px-3 text-[12px] text-muted hover:border-ink/30 hover:text-ink md:ml-0"
-            >
-                管理者ログイン
-            </Link>
-        </header>
+            {session ? (
+                <>
+                    <Link
+                        href="/admin"
+                        className="ml-auto flex h-9 items-center gap-2 border border-line bg-panel px-3 text-[12px] text-muted hover:border-ink/30 hover:text-ink md:ml-0"
+                    >
+                        管理者用画面
+                    </Link>
+
+                    <form action={logout}>
+                        <button
+                            type="submit"
+                            className="ml-auto flex h-9 items-center gap-2 border border-line bg-panel px-3 text-[12px] text-muted hover:border-ink/30 hover:text-ink md:ml-0"
+                        >
+                            ログアウト
+                        </button>
+                    </form>
+                </>
+            ) : (
+
+                <Link
+                    href="/admin/login"
+                    className="ml-auto flex h-9 items-center gap-2 border border-line bg-panel px-3 text-[12px] text-muted hover:border-ink/30 hover:text-ink md:ml-0"
+                >
+                    管理者ログイン
+                </Link>
+            )
+            }
+
+        </header >
     );
 }

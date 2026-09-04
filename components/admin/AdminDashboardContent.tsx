@@ -5,11 +5,12 @@ import CollaborationFormModal from "@/components/admin/CollaborationFormModal";
 import MuseumFormModal from "@/components/admin/MuseumFormModal";
 import MuseumTable from "@/components/admin/MuseumTable";
 import CollaborationTable from "@/components/admin/CollaborationTable";
-import { fetchMuseums, fetchCollaboration, createMuseum, deleteMuseum } from "@/lib/actions/museum";
+import { fetchMuseums } from "@/lib/actions/museum";
+import { createMuseum, updateMuseum, deleteMuseum } from "@/lib/actions/museum-admin";
 import { fetchAllFacilityTypes } from "@/lib/actions/facilityType";
 import { fetchAllPrefecture } from "@/lib/actions/prefecture";
-import { addCollabo, updateCollabo, deleteCollabo } from "@/lib/actions/collaboration";
-import { updateMuseum } from "@/lib/actions/museum";
+import { fetchCollaboration } from "@/lib/actions/collaboration";
+import { addCollabo, updateCollabo, deleteCollabo } from "@/lib/actions/collaboration-admin";
 
 const TITLE_MAP: Record<Content, string> = {
     museum: "美術館一覧",

@@ -1,6 +1,6 @@
 // セッションの実体は「署名付きJWT」をhttpOnlyCookieに入れたもの（ステートレスセッション）
 
-import "server-only" // 秘密鍵やCookie操作を含むこのファイルが、誤ってクライアント側バンドルに混入する事故を防ぐ
+import "server-only"
 import { cookies } from "next/headers"
 import { SignJWT, jwtVerify } from "jose"
 

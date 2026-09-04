@@ -87,19 +87,13 @@
 - アクセスのたびに延長したい（スライディングセッション）場合は、`getSession()` 成功時に
   トークンを再発行して Cookie を上書きする処理を足す。まずは固定で運用。
 
-### 動作確認の順序
-
-1. `npm run dev` → 未ログインで `/admin` 直打ち → `/admin/login` へ（proxy）
-2. ログイン成功 → `/admin` 表示、Cookie に JWT が入る
-3. ログイン済みで `/admin/login` を開く → `/admin` へ（proxy）
-4. DevTools で Cookie を書き換え → リロードで `/admin/login`（layout の JWT 検証で弾く）
-5. `MAX_SESSION_TIME` を短くして期限切れ → ログイン画面に戻る
-
-### 残タスク
-
-- [ ] `app/proxy.ts` → プロジェクトルート `proxy.ts` へ移動
-- [ ] `.env.local` と Vercel に `ADMIN_SESSION_SECRET` を設定
-- [ ] 管理画面サイドバーに `<form action={logout}>` でログアウトボタンを設置
-
-### awaitを()で囲っている理由
 「const token = (await cookies()).get(COOKIE)?.value;」のようにawaitを()で囲う理由は、Next.js16ではcookies()がPromiseなったため、中身（Cookieストア）を取り出してから get()/set()を呼ぶようにする必要がある（優先順位）
+
+## ディレクティブの使い分け
+- "use client"・・・クライアントコンポーネント。フォーム入力・stateなど、Reactの「use～」等が使える
+      ↓
+- "use server"・・・Server Actionクライアントコンポーネントとサーバーの橋渡し。クライアントコンポーネントからは「use server（サーバーコンポーネント）しか呼べない」
+      ↓
+- "server-only"・・・JWT発行・Cookie操作などのサーバーで処理する（クライアントで書き換えられたら困る）関数群。クライアントコンポーネントから呼ぼうとすると、ビルドエラーになって防いでくれるため、明示的に宣言することが推奨。
+ただし、サーバー側だからつけるのではなく、「クライアントに混ざったら壊れる/漏れるコードを、ビルドで止める安全装置」としての本来の役割に必要な場所のみ記載する。
+これだけ、「import "server-only"」と書く
