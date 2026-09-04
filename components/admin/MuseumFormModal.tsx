@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { MuseumMapItem, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
+import { uploadMuseumImage } from "@/lib/actions/museum-admin";
+import { validateImageFile, MAX_IMAGE_LABEL } from "@/lib/imageUpload";
 import CollaborationFields from "./CollaborationFields";
 
 type MuseumFormModalProps = {
@@ -23,7 +25,8 @@ type MuseumFormState = {
     phone: string;
     openingHours: string;
     admissionFee: string;
-    imageUrl: string;
+    coverImageUrl: string;
+    subImageUrls: string[];
     hasCollaboration: boolean;
 };
 
@@ -57,15 +60,62 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
         phone: initialMuseum?.phone ?? "",
         openingHours: initialMuseum?.openingHours ?? "",
         admissionFee: initialMuseum?.admissionFee ?? "",
-        imageUrl: initialMuseum?.imageUrl ?? "",
+        coverImageUrl: initialMuseum?.coverImageUrl ?? "",
+        subImageUrls: initialMuseum?.subImageUrls ?? [],
         hasCollaboration: initialMuseum?.hasCollaboration ?? false,
     });
 
     // 必須項目ごとのエラーメッセージ。キーが存在する項目のみ入力欄の下に表示される
     const [errors, setErrors] = useState<FormErrors>({});
 
+    // 現在アップロード中の画像スロット（"cover" / "sub-0" / "sub-1"）。null なら非アップロード中
+    const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
+    // 画像アップロードの失敗メッセージ
+    const [uploadError, setUploadError] = useState<string | null>(null);
+
     function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
         setForm((prev) => ({ ...prev, [key]: value }));
+    }
+
+    // 追加画像URL（subImageUrls）の指定インデックスだけを書き換える
+    function updateSubImage(index: number, value: string) {
+        setForm((prev) => {
+            const next = [...prev.subImageUrls];
+            if (value === "") {
+                next.splice(index, 1);
+            } else {
+                next[index] = value;
+            }
+            return { ...prev, subImageUrls: next };
+        });
+    }
+
+    // ファイルを選択したら Blob にアップロードし、返ってきた URL をフォームに反映する
+    async function handleUpload(slot: "cover" | "sub", file: File | undefined, index?: number) {
+        if (!file) return;
+        const slotKey = slot === "cover" ? "cover" : `sub-${index}`;
+        setUploadError(null);
+
+        // アップロード前にサイズ・種別をチェック（サーバー側でも同じ検証を行う）
+        const invalid = validateImageFile(file);
+        if (invalid) {
+            setUploadError(invalid);
+            return;
+        }
+
+        setUploadingSlot(slotKey);
+        try {
+            const url = await uploadMuseumImage(file);
+            if (slot === "cover") {
+                updateField("coverImageUrl", url);
+            } else if (index != null) {
+                updateSubImage(index, url);
+            }
+        } catch (e) {
+            setUploadError(e instanceof Error ? e.message : "画像のアップロードに失敗しました");
+        } finally {
+            setUploadingSlot(null);
+        }
     }
 
     // 必須項目が未入力（空文字、または空白のみ）かどうかをチェックし、
@@ -100,7 +150,8 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
             phone: form.phone || null,
             openingHours: form.openingHours || null,
             admissionFee: form.admissionFee || null,
-            imageUrl: form.imageUrl || null,
+            coverImageUrl: form.coverImageUrl || null,
+            subImageUrls: form.subImageUrls.map((s) => s.trim()).filter(Boolean),
             hasCollaboration: form.hasCollaboration,
             title: form.title,
             description: form.description,
@@ -134,7 +185,8 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
             phone: form.phone || null,
             openingHours: form.openingHours || null,
             admissionFee: form.admissionFee || null,
-            imageUrl: form.imageUrl || null,
+            coverImageUrl: form.coverImageUrl || null,
+            subImageUrls: form.subImageUrls.map((s) => s.trim()).filter(Boolean),
             hasCollaboration: form.hasCollaboration
         };
         await onUpdate(museum);
@@ -289,16 +341,94 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
                         />
                     </label>
 
-                    <label className="flex flex-col gap-1 text-sm">
-                        画像URL
-                        <input
-                            type="text"
-                            name="imageUrl"
-                            value={form.imageUrl}
-                            onChange={(e) => updateField("imageUrl", e.target.value)}
-                            className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                        />
-                    </label>
+                    <fieldset className="flex flex-col gap-4 rounded-lg border border-neutral-700 p-3">
+                        <legend className="px-1 text-xs font-medium text-neutral-400">画像</legend>
+
+                        {/* メイン画像: 一覧・カード・詳細トップで使い回す代表画像（1枚） */}
+                        <div className="flex flex-col gap-1.5 text-sm">
+                            <span className="flex items-center gap-2">
+                                メイン画像
+                                <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] font-medium text-neutral-900">
+                                    一覧・カード・詳細トップ
+                                </span>
+                            </span>
+                            <span className="text-xs text-neutral-500">
+                                全ページで使い回す代表画像。中央を基準に自動トリミングされます。（{MAX_IMAGE_LABEL}まで）
+                            </span>
+                            {form.coverImageUrl.trim() !== "" ? (
+                                <div className="mt-1 flex items-start gap-3">
+                                    <img
+                                        src={form.coverImageUrl}
+                                        alt=""
+                                        className="h-24 w-40 rounded border border-neutral-700 object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => updateField("coverImageUrl", "")}
+                                        className="cursor-pointer rounded-lg border border-neutral-700 px-2 py-1 text-xs text-neutral-300 hover:bg-neutral-800"
+                                    >
+                                        削除
+                                    </button>
+                                </div>
+                            ) : (
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    disabled={uploadingSlot === "cover"}
+                                    onChange={(e) => handleUpload("cover", e.target.files?.[0])}
+                                    className="text-sm text-neutral-300 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-neutral-900 disabled:opacity-50"
+                                />
+                            )}
+                            {uploadingSlot === "cover" && (
+                                <span className="text-xs text-neutral-400">アップロード中…</span>
+                            )}
+                        </div>
+
+                        {/* 追加画像: 詳細ページのギャラリーにだけ並ぶ補助画像（最大2枚） */}
+                        <div className="flex flex-col gap-2 text-sm">
+                            <span className="flex items-center gap-2">
+                                追加画像
+                                <span className="rounded border border-neutral-600 px-1.5 py-0.5 text-[10px] text-neutral-400">
+                                    詳細ページのみ・最大2枚
+                                </span>
+                            </span>
+                            <span className="text-xs text-neutral-500">
+                                詳細ページのギャラリーに並べる補助画像。（各 {MAX_IMAGE_LABEL} まで）
+                            </span>
+                            <div className="flex flex-wrap gap-3">
+                                {form.subImageUrls.map((url, index) => (
+                                    <div key={url} className="flex flex-col items-start gap-1">
+                                        <img
+                                            src={url}
+                                            alt=""
+                                            className="h-20 w-32 rounded border border-neutral-700 object-cover"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => updateSubImage(index, "")}
+                                            className="cursor-pointer rounded-lg border border-neutral-700 px-2 py-0.5 text-xs text-neutral-300 hover:bg-neutral-800"
+                                        >
+                                            削除
+                                        </button>
+                                    </div>
+                                ))}
+                                {form.subImageUrls.length < 2 && (
+                                    <label className="flex h-20 w-32 cursor-pointer flex-col items-center justify-center rounded border border-dashed border-neutral-600 text-xs text-neutral-400 hover:border-neutral-400">
+                                        {uploadingSlot === `sub-${form.subImageUrls.length}` ? "アップロード中…" : "＋ 画像を追加"}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            disabled={uploadingSlot != null}
+                                            onChange={(e) => handleUpload("sub", e.target.files?.[0], form.subImageUrls.length)}
+                                            className="hidden"
+                                        />
+                                    </label>
+                                )}
+                            </div>
+                        </div>
+
+                        {uploadError && <span className="text-xs text-red-400">{uploadError}</span>}
+                    </fieldset>
 
                     {mode === "create" && (
                         <label className="flex items-center gap-2 text-sm">
@@ -329,7 +459,8 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
                             <button
                                 type="button"
                                 onClick={() => submit()}
-                                className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
+                                disabled={uploadingSlot != null}
+                                className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 作成
                             </button>
@@ -337,7 +468,8 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
                             <button
                                 type="button"
                                 onClick={() => handleUpdate()}
-                                className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
+                                disabled={uploadingSlot != null}
+                                className="cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 更新
                             </button>

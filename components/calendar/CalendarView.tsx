@@ -4,7 +4,7 @@ import CalendarGrid from "./CalendarGrid";
 import CollaborationDetailPanel, { type CollaboDetail } from "./CollaborationDetailPanel";
 import { useState, useEffect } from "react";
 import type { Collaboration } from "@/types/museum";
-import { fetchCollaboDetail } from "@/lib/actions/museum";
+import { fetchCollaboDetail } from "@/lib/actions/collaboration";
 
 export default function CalendarView({ collaborationsData }: { collaborationsData: Collaboration[] }) {
     const today = new Date();

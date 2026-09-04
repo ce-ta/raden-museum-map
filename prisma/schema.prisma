@@ -39,7 +39,8 @@ model Museum {
   phone             String?
   openingHours      String?
   admissionFee      String?
-  imageUrl          String? // public/ 配下の画像パス、または外部ストレージのURL
+  coverImageUrl     String?          // 必須の画像
+  subImageUrls      String[] @default([]) // オプションの画像
   hasCollaboration  Boolean  @default(false) // 公式コラボが実施済みかどうか
   typeId            Int
   type              FacilityType @relation(fields: [typeId], references: [id])

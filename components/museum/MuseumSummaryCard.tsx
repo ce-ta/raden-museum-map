@@ -32,8 +32,8 @@ export default function MuseumSummaryCard({ museumId, onClose }: { museumId: str
             ) : (
                 <>
                     <div className="relative">
-                        {detail.imageUrl ? (
-                            <img src={detail.imageUrl} alt="" className="h-[132px] w-full object-cover md:h-[168px]" />
+                        {detail.coverImageUrl ? (
+                            <img src={detail.coverImageUrl} alt="" className="h-[132px] w-full object-cover md:h-[168px]" />
                         ) : (
                             <div className="ph h-[132px] w-full md:h-[168px]" />
                         )}

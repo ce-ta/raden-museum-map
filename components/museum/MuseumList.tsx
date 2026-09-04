@@ -66,8 +66,8 @@ export default function MuseumList({
                                     className={`flex w-full gap-4 px-4 py-4 text-left transition-colors hover:bg-white/[.04] md:px-6 ${selectedId === museum.id ? "bg-accent-soft" : ""
                                         }`}
                                 >
-                                    {museum.imageUrl ? (
-                                        <img src={museum.imageUrl} alt="" className="h-[68px] w-[68px] flex-none object-cover" />
+                                    {museum.coverImageUrl ? (
+                                        <img src={museum.coverImageUrl} alt="" className="h-[68px] w-[68px] flex-none object-cover" />
                                     ) : (
                                         <span className="ph h-[68px] w-[68px] flex-none" aria-hidden="true" />
                                     )}

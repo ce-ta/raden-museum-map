@@ -33,9 +33,9 @@ export default async function MuseumDetailPage({
             </nav>
 
             <section className="grid gap-3 md:grid-cols-[1.9fr_1fr] md:gap-3">
-                {museum.imageUrl ? (
+                {museum.coverImageUrl ? (
                     <img
-                        src={museum.imageUrl}
+                        src={museum.coverImageUrl}
                         alt={museum.name}
                         className="aspect-[16/10] w-full object-cover md:aspect-[16/9]"
                     />
@@ -47,8 +47,13 @@ export default async function MuseumDetailPage({
                     </div>
                 )}
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-1">
-                    <div className="ph relative aspect-[4/3] md:aspect-auto md:h-full" />
-                    <div className="ph relative aspect-[4/3] md:aspect-auto md:h-full" />
+                    {museum.subImageUrls.map((url) => (
+                        <img
+                            src={url}
+                            key={url}
+                            className="relative aspect-[4/3] md:aspect-auto md:h-full"
+                        />
+                    ))}
                 </div>
             </section>
 

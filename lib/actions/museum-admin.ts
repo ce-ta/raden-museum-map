@@ -4,6 +4,8 @@ import type { NewMuseumInput, MuseumMapItem } from "@/types/museum";
 import type { NewCollaborationInput } from "@/types/museum";
 import { addMuseum, updateMuseumRecord, removeMuseum } from "../museums";
 import { requiredAdmin } from "./sessions";
+import { put } from "@vercel/blob";
+import { validateImageFile } from "../imageUpload";
 
 function isBlank(value: string | null | undefined) {
     return value == null || value.trim() === "";
@@ -55,4 +57,15 @@ export async function updateMuseum(museum: MuseumMapItem) {
 export async function deleteMuseum(id: string) {
     await requiredAdmin();
     return removeMuseum(id)
+}
+
+export async function uploadMuseumImage(file: File): Promise<string> {
+    await requiredAdmin();
+    const invalid = validateImageFile(file);
+    if (invalid) throw new Error(invalid);
+    const blob = await put(`museums/${file.name}`, file, {
+        access: "public",
+        addRandomSuffix: true,
+    });
+    return blob.url;
 }

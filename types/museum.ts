@@ -51,7 +51,8 @@ export type NewMuseumInput = {
   phone?: string | null;
   openingHours?: string | null;
   admissionFee?: string | null;
-  imageUrl?: string | null;
+  coverImageUrl?: string | null;
+  subImageUrls?: string[];
   hasCollaboration?: boolean;
 };
 

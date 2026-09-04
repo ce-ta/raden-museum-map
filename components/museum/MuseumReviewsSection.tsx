@@ -21,11 +21,11 @@ export default function MuseumReviewsSection({
 
     return (
         <section id="reviewForm" className="space-y-4">
-            <div className="flex items-baseline justify-between">
+            {/* <div className="flex items-baseline justify-between">
                 <h2 className="font-serif text-[17px] tracking-wide">
                     みんなの投稿 <span className="ml-1 text-[12px] text-faint">{sorted.length}</span>
                 </h2>
-                {/* {!isFormOpen && (
+                {!isFormOpen && (
                     <button
                         type="button"
                         className="border border-accent bg-accent px-4 py-2 text-[12px] font-medium text-[#17131f] hover:bg-[#c8bbec] cursor-pointer"
@@ -33,8 +33,8 @@ export default function MuseumReviewsSection({
                     >
                         感想を投稿する
                     </button>
-                )} */}
-            </div>
+                )}
+            </div> */}
 
             {isFormOpen && (
                 <ReportForm

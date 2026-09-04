@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requiredAdmin } from "@/lib/actions/sessions";
+import { getSession } from "@/lib/sessions";
 import { logout } from "@/lib/actions/login";
 
 const NAV_ITEMS = [
@@ -8,7 +8,7 @@ const NAV_ITEMS = [
 ];
 
 export default async function SiteHeader() {
-    const session = await requiredAdmin();
+    const session = await getSession();
 
     return (
         <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-line bg-paper/95 px-4 backdrop-blur md:h-16 md:px-6">
