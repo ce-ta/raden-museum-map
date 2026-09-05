@@ -31,6 +31,7 @@ export type OfficialCollaborationItem = {
   sourceUrl: string;
   startDate: Date | null;
   endDate: Date | null;
+  isOfficial: boolean;
 }
 
 // OfficialCollaboration に紐づく Museum の名前を結合した型。
@@ -53,7 +54,6 @@ export type NewMuseumInput = {
   admissionFee?: string | null;
   coverImageUrl?: string | null;
   subImageUrls?: string[];
-  hasCollaboration?: boolean;
 };
 
 export type NewCollaborationInput = {
@@ -64,4 +64,5 @@ export type NewCollaborationInput = {
   endDate?: Date | null;
   museumId: string;
   collaborationId?: string;
+  isOfficial: boolean;
 };

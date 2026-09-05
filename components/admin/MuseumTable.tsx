@@ -1,4 +1,5 @@
 import type { MuseumMapItem } from "@/types/museum";
+import { checkCollaboration } from "@/lib/collaboration";
 
 export default function MuseumTable({ museums, onEdit, onDelete }: { museums: MuseumMapItem[] | null, onEdit: (id: string) => void, onDelete: (id: string) => void }) {
     if (museums === null) {
@@ -37,7 +38,7 @@ export default function MuseumTable({ museums, onEdit, onDelete }: { museums: Mu
                                 "-"
                             )}
                         </td>
-                        <td className="px-4 py-3 text-neutral-400">{museum.hasCollaboration ? "あり" : "なし"}</td>
+                        <td className="px-4 py-3 text-neutral-400">{checkCollaboration(museum) ? "あり" : "なし"}</td>
                         <td className="px-4 py-3 text-right">
                             <button
                                 type="button"

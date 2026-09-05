@@ -20,7 +20,10 @@ function withReportCount<T extends { _count: { reports: number } }>(museum: T) {
 
 export async function getMuseums() {
     const museums = await prisma.museum.findMany({
-        include: { _count: { select: { reports: true } } },
+        include: {
+            _count: { select: { reports: true } },
+            collaborations: { select: { isOfficial: true } },
+        },
     });
     return museums.map(withReportCount);
 }
@@ -51,11 +54,12 @@ export async function filterMuseums(filter: FilterState) {
         return [];
     }
 
-    // 両方チェック → 絞り込みなし、片方だけ → その値で絞り込み
-    const hasCollaborationFilter =
+    const collaborationCondition =
         filter.hasCollaboration && filter.hasNotCollaboration
-            ? undefined
-            : filter.hasCollaboration;
+            ? undefined                                                  // 両方チェック→絞り込みなし
+            : filter.hasCollaboration
+                ? { collaborations: { some: { isOfficial: true } } }      // コラボありのみ
+                : { collaborations: { none: { isOfficial: true } } };     // コラボなしのみ
 
     const regionCodes = filter.regions.length > 0 ? regionsToCodes(filter.regions) : null;
 
@@ -73,11 +77,12 @@ export async function filterMuseums(filter: FilterState) {
             ...(filter.typeIds.length > 0 && {
                 typeId: { in: filter.typeIds },
             }),
-            ...(hasCollaborationFilter !== undefined && {
-                hasCollaboration: hasCollaborationFilter,
-            }),
+            ...(collaborationCondition ?? {}),
         },
-        include: { _count: { select: { reports: true } } },
+        include: {
+            _count: { select: { reports: true } },
+            collaborations: { select: { isOfficial: true } },   // 判定に要る最小限だけ取得
+        },
         orderBy: filter.sortBy === "name" ? { name: filter.sortOrder } : undefined,
     });
 

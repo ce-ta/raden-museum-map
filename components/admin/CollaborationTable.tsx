@@ -15,7 +15,8 @@ export default function CollaborationTable({ collaborations, onEdit, onDelete }:
             <thead className="bg-neutral-900 text-neutral-400">
                 <tr>
                     <th className="px-4 py-3 font-medium">名前</th>
-                    <th className="px-4 py-3 font-medium">コラボ名</th>
+                    <th className="px-4 py-3 font-medium">区分</th>
+                    <th className="px-4 py-3 font-medium">タイトル</th>
                     <th className="px-4 py-3 font-medium">概要</th>
                     <th className="px-4 py-3 font-medium">開始日</th>
                     <th className="px-4 py-3 font-medium">終了日</th>
@@ -26,6 +27,13 @@ export default function CollaborationTable({ collaborations, onEdit, onDelete }:
                 {collaborations.map((collaboration) => (
                     <tr key={collaboration.id} className="border-t border-neutral-800 bg-neutral-950">
                         <td className="px-4 py-3">{collaboration.museum.name}</td>
+                        <td className="px-4 py-3">
+                            {collaboration.isOfficial ? (
+                                <span className="text-neutral-100">コラボ</span>
+                            ) : (
+                                <span className="text-neutral-400">紹介のみ</span>
+                            )}
+                        </td>
                         <td className="px-4 py-3">{collaboration.title}</td>
                         <td className="px-4 py-3">{collaboration.description}</td>
                         <td className="px-4 py-3 text-neutral-400">{formatDate(collaboration.startDate)}</td>

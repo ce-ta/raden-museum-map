@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { fetchMuseumDetail } from "@/lib/actions/museum";
 import { regionOfPrefecture } from "@/lib/regions";
+import { checkCollaboration } from "@/lib/collaboration";
 
 type MuseumDetail = Awaited<ReturnType<typeof fetchMuseumDetail>>;
 
@@ -54,7 +55,7 @@ export default function MuseumSummaryCard({ museumId, onClose }: { museumId: str
 
                         <div className="mt-3 flex flex-wrap gap-1.5">
                             <span className="border border-line px-2 py-0.5 text-[11px] text-muted">{detail.type.name}</span>
-                            {detail.hasCollaboration && (
+                            {checkCollaboration(detail) && (
                                 <span className="border border-accent/70 bg-accent-soft px-2 py-0.5 text-[11px] text-accent">
                                     コラボあり
                                 </span>

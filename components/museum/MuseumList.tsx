@@ -3,6 +3,7 @@
 
 import { regionOfPrefecture } from "@/lib/regions";
 import type { FilterState, MuseumMapItem } from "@/types/museum";
+import { checkCollaboration } from "@/lib/collaboration";
 
 export default function MuseumList({
     museums,
@@ -77,7 +78,7 @@ export default function MuseumList({
                                         </span>
                                         <span className="mt-1 block truncate font-serif text-[15px] text-ink">{museum.name}</span>
                                         <span className="mt-1.5 block text-[11px] text-muted">
-                                            {museum.hasCollaboration ? "コラボあり" : "コラボなし（紹介のみ）"}
+                                            {checkCollaboration(museum) ? "コラボあり" : "コラボなし（紹介のみ）"}
                                             {/* <span className="text-faint"> ・感想 {museum.reportCount}件</span> */}
                                         </span>
                                         {museum.openingHours && (

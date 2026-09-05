@@ -41,7 +41,6 @@ model Museum {
   admissionFee      String?
   coverImageUrl     String?          // 必須の画像
   subImageUrls      String[] @default([]) // オプションの画像
-  hasCollaboration  Boolean  @default(false) // 公式コラボが実施済みかどうか
   typeId            Int
   type              FacilityType @relation(fields: [typeId], references: [id])
   prefectureCode    Int
@@ -62,6 +61,7 @@ model OfficialCollaboration {
   sourceUrl   String // 告知元（公式サイト・SNS投稿など）のURL
   startDate   DateTime? // コラボ企画の開始日（単発企画の場合はendDateと同日）
   endDate     DateTime? // コラボ企画の終了日
+  isOfficial  Boolean   @default(true) // true: 正式なコラボ企画 / false: 紹介のみ（Museum.hasCollaborationの判定に使う）
 }
 
 /// リスナー・ユーザーからの訪問レポート投稿

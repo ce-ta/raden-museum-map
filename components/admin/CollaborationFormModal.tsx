@@ -20,6 +20,7 @@ type CollaborationFormState = {
     startDate: string;
     endDate: string;
     collaborationId: string;
+    isOfficial: boolean;
 };
 
 // 必須項目のキー一覧（バリデーション対象はここに追加/削除するだけでよい）
@@ -51,7 +52,8 @@ export default function CollaborationFormModal({
         sourceUrl: initialCollaboration?.sourceUrl ?? "",
         startDate: toDateInputValue(initialCollaboration?.startDate),
         endDate: toDateInputValue(initialCollaboration?.endDate),
-        collaborationId: initialCollaboration?.id ?? ""
+        collaborationId: initialCollaboration?.id ?? "",
+        isOfficial: initialCollaboration?.isOfficial ?? true
     });
 
     // 必須項目ごとのエラーメッセージ。キーが存在する項目のみ入力欄の下に表示される
@@ -85,7 +87,8 @@ export default function CollaborationFormModal({
             description: form.description || null,
             sourceUrl: form.sourceUrl,
             startDate: form.startDate ? new Date(form.startDate) : null,
-            endDate: form.endDate ? new Date(form.endDate) : null
+            endDate: form.endDate ? new Date(form.endDate) : null,
+            isOfficial: form.isOfficial
         };
         await onCreate(collaboration);
         onClose();
@@ -106,7 +109,8 @@ export default function CollaborationFormModal({
             sourceUrl: form.sourceUrl,
             startDate: form.startDate ? new Date(form.startDate) : null,
             endDate: form.endDate ? new Date(form.endDate) : null,
-            collaborationId: form.collaborationId
+            collaborationId: form.collaborationId,
+            isOfficial: form.isOfficial
         };
         await onUpdate(collaboration);
         onClose();
@@ -163,8 +167,34 @@ export default function CollaborationFormModal({
                         {errors.museumId && <span className="text-xs text-red-400">{errors.museumId}</span>}
                     </label>
 
+                    <fieldset className="flex flex-col gap-1 text-sm">
+                        <legend className="mb-1">区分</legend>
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-1.5">
+                                <input
+                                    type="radio"
+                                    name="isOfficial"
+                                    checked={form.isOfficial}
+                                    onChange={() => updateField("isOfficial", true)}
+                                    className="h-3.5 w-3.5 border-neutral-700 bg-neutral-800"
+                                />
+                                コラボ
+                            </label>
+                            <label className="flex items-center gap-1.5">
+                                <input
+                                    type="radio"
+                                    name="isOfficial"
+                                    checked={!form.isOfficial}
+                                    onChange={() => updateField("isOfficial", false)}
+                                    className="h-3.5 w-3.5 border-neutral-700 bg-neutral-800"
+                                />
+                                紹介のみ
+                            </label>
+                        </div>
+                    </fieldset>
+
                     <label className="flex flex-col gap-1 text-sm">
-                        コラボ名
+                        {form.isOfficial ? "コラボ名" : "紹介タイトル"}
                         <input
                             type="text"
                             name="title"
@@ -198,28 +228,30 @@ export default function CollaborationFormModal({
                         {errors.sourceUrl && <span className="text-xs text-red-400">{errors.sourceUrl}</span>}
                     </label>
 
-                    <div className="flex gap-3">
-                        <label className="flex flex-1 flex-col gap-1 text-sm">
-                            開始日
-                            <input
-                                type="date"
-                                name="startDate"
-                                value={form.startDate}
-                                onChange={(e) => updateField("startDate", e.target.value)}
-                                className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                            />
-                        </label>
-                        <label className="flex flex-1 flex-col gap-1 text-sm">
-                            終了日
-                            <input
-                                type="date"
-                                name="endDate"
-                                value={form.endDate}
-                                onChange={(e) => updateField("endDate", e.target.value)}
-                                className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
-                            />
-                        </label>
-                    </div>
+                    {form.isOfficial && (
+                        <div className="flex gap-3">
+                            <label className="flex flex-1 flex-col gap-1 text-sm">
+                                開始日
+                                <input
+                                    type="date"
+                                    name="startDate"
+                                    value={form.startDate}
+                                    onChange={(e) => updateField("startDate", e.target.value)}
+                                    className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
+                                />
+                            </label>
+                            <label className="flex flex-1 flex-col gap-1 text-sm">
+                                終了日
+                                <input
+                                    type="date"
+                                    name="endDate"
+                                    value={form.endDate}
+                                    onChange={(e) => updateField("endDate", e.target.value)}
+                                    className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-neutral-400"
+                                />
+                            </label>
+                        </div>
+                    )}
 
                     <div className="mt-2 flex justify-end gap-2">
                         <button

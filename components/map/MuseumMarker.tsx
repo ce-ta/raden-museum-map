@@ -6,6 +6,7 @@ import type L from "leaflet";
 import type { MuseumMapItem } from "../../types/museum";
 import { museumIcon, collaboratedMuseumIcon, currentLocationIcon } from "./museumIcon";
 import { createGoogleMapUrl } from "@/lib/googleMaps";
+import { checkCollaboration } from "@/lib/collaboration";
 
 export default function MuseumMarker({
     museums,
@@ -111,7 +112,7 @@ function MuseumMarkerItem({
         <Marker
             ref={markerRef}
             position={[museum.lat, museum.lng]}
-            icon={museum.hasCollaboration ? collaboratedMuseumIcon : museumIcon}
+            icon={checkCollaboration(museum) ? collaboratedMuseumIcon : museumIcon}
             eventHandlers={{
                 click: () => {
                     onSelect(museum.id);

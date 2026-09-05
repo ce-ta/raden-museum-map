@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMuseumDetail, getMuseums } from "@/lib/museums";
+import { checkCollaboration } from "@/lib/collaboration";
 import { createGoogleMapUrl } from "@/lib/googleMaps";
 import { distanceKm } from "@/lib/geo";
 import MuseumMiniMap from "@/components/museum/MuseumMiniMapLoader";
@@ -68,7 +69,7 @@ export default async function MuseumDetailPage({
                         <span className="border border-accent/70 bg-accent-soft px-2.5 py-1 text-[12px] text-accent">
                             {museum.type.name}
                         </span>
-                        {museum.hasCollaboration && (
+                        {checkCollaboration(museum) && (
                             <span className="border border-line px-2.5 py-1 text-[12px] text-muted">
                                 公式コラボあり
                             </span>
