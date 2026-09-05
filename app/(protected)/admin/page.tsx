@@ -17,7 +17,7 @@ const NAV_ITEMS: NavItems[] = [
 export default function AdminPage() {
     const [content, setContent] = useState<Content | null>(null);
     return (
-        <div className="flex h-screen">
+        <div className="flex min-h-screen">
             <aside className="w-56 shrink-0 border-r border-neutral-700 bg-neutral-900 p-4 text-neutral-100">
                 <h1 className="mb-6 text-lg font-semibold">管理者用画面</h1>
                 <nav className="flex flex-col gap-1">

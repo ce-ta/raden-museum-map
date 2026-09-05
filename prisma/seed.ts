@@ -76,7 +76,6 @@ async function main() {
     phone: "0460-86-3111",
     openingHours: "10:00〜17:30（入館は17:00まで）※成人の日の翌日から11日間は冬季休館",
     admissionFee: "大人1,800円／大学生・高校生1,300円／中学生・小学生600円（税込）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -114,7 +113,6 @@ async function main() {
     phone: "03-3479-8600",
     openingHours: "10:00～18:00（金・土は20:00まで、入館は閉館30分前まで）",
     admissionFee: "展覧会ごとに異なる（公式サイト「開館時間・入館料」参照）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -138,7 +136,6 @@ async function main() {
     openingHours: "10:00～17:30（最終入館17:00）休館日：月曜（祝日の場合は翌平日）",
     admissionFee:
       "収蔵品展：大人300円（団体200円）、年間パスポート500円、大学生以下・70歳以上無料。企画展は展覧会ごとに異なる",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -168,7 +165,6 @@ async function main() {
     openingHours:
       "火～日 9:30～17:00（特別展中は延長あり、金・土は夜間開館の場合あり）休館日：月曜（祝日の場合は翌平日）",
     admissionFee: "展示内容により異なる（特別展「源氏物語 王朝のかがやき」は別途料金）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -193,7 +189,6 @@ async function main() {
       "9:30～17:00（金・土は20:00まで、入館は閉館30分前まで）休館日：月曜（祝日の場合は開館、翌平日休館）",
     admissionFee:
       "総合文化展：一般1,000円、大学生500円、高校生以下・満18歳未満・満70歳以上無料（特別展は別料金）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -221,7 +216,6 @@ async function main() {
     phone: "050-5542-8600（ハローダイヤル）",
     openingHours: "9:30～17:00（最終入館16:30）休館日：月曜（祝日・振替休日の場合は翌日）、年末年始",
     admissionFee: "文化交流展：大人700円、大学生350円、高校生以下無料（特別展は別料金）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -245,7 +239,6 @@ async function main() {
     openingHours:
       "10:00～17:00（金・土は20:00まで、入場は閉館30分前まで）休館日：月曜（祝日の場合は開館し翌日休館）",
     admissionFee: "所蔵作品展と特別展で異なる（公式サイト参照）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -268,7 +261,6 @@ async function main() {
     phone: "06-6479-0550（代表、10:00-17:30）",
     openingHours: "10:00～17:00（最終入館16:30）休館日：月曜（祝日の場合は翌平日）",
     admissionFee: "展覧会により異なる（公式サイト参照）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -291,7 +283,6 @@ async function main() {
     phone: "0460-84-2111",
     openingHours: "9:00～17:00（入館は16:30まで）会期中無休（展示替え等による臨時休館あり）",
     admissionFee: "大人2,200円、大学生・高校生1,700円、中学生以下無料（税込）",
-    hasCollaboration: true,
     collaborations: {
       create: [
         {
@@ -304,7 +295,7 @@ async function main() {
   });
 
   // 以下は公式コラボではなく、本人が配信や記事内で紹介・言及したのみの施設。
-  // hasCollaboration は false とし、コラボ実績（OfficialCollaboration）は登録しない。
+  // コラボ実績（OfficialCollaboration）は登録しない。
 
   await recreateMuseum("アーティゾン美術館", {
     name: "アーティゾン美術館",
@@ -319,7 +310,6 @@ async function main() {
       "10:00〜18:00（最終入館17:30、金曜は祝日を除き20:00まで）休館日：月曜（祝日の場合は開館し翌平日休館）",
     admissionFee:
       "展覧会により異なる。大学生・専門学校生・高校生・中学生以下・障害者手帳保持者と付添者1名は無料",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("東京都写真美術館", {
@@ -333,7 +323,6 @@ async function main() {
     phone: "03-3280-0099",
     openingHours: "10:00〜18:00（木・金曜は20:00まで）休館日：月曜（祝休日の場合は開館し翌平日休館）",
     admissionFee: "展覧会・上映により異なる（公式サイト参照）",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("奈良国立博物館", {
@@ -348,7 +337,6 @@ async function main() {
     openingHours:
       "9:30〜17:00（金・土は名品展・特別陳列のみ20:00まで）休館日：月曜（祝日・休日の場合は翌平日）",
     admissionFee: "名品展・特別陳列・特集展示：大人700円、大学生350円、小中高生無料（特別展は別料金）",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("下瀬美術館", {
@@ -362,7 +350,6 @@ async function main() {
     phone: "0827-94-4000",
     openingHours: "9:30〜17:00（入館は16:30まで）休館日：月曜（祝休日の場合は開館）",
     admissionFee: "一般1,800円（団体・大竹市民1,500円）、高校生・大学生900円（同800円）、中学生以下無料",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("国立西洋美術館", {
@@ -378,7 +365,6 @@ async function main() {
       "9:30〜17:30（金・土は20:00まで）休館日：月曜（祝日の場合は開館し翌平日休館）、年末年始",
     admissionFee:
       "常設展：一般500円、大学生250円、高校生以下・満18歳未満・満70歳以上無料（企画展は別料金）",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("愛知県美術館", {
@@ -393,7 +379,6 @@ async function main() {
     openingHours:
       "10:00〜17:00（最終入館16:30、金曜は20:00まで）休館日：月曜（祝日・振替休日の場合は翌日）、年末年始",
     admissionFee: "コレクション展：一般500円、大学生300円、高校生以下無料（企画展は展覧会により異なる）",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("北澤美術館", {
@@ -407,7 +392,6 @@ async function main() {
     phone: "0266-58-6000",
     openingHours: "9:00〜18:00（4〜9月）／9:00〜17:00（10〜3月）、入館は閉館30分前まで",
     admissionFee: "大人（高校生以上）1,000円、中学生500円、小学生以下無料",
-    hasCollaboration: false,
   });
 
   await recreateMuseum("高浜市やきものの里 かわら美術館・図書館", {
@@ -421,7 +405,6 @@ async function main() {
     phone: "0566-52-3366",
     openingHours: "10:00〜17:00（最終入館16:30）休館日：月曜・火曜、年末年始ほか",
     admissionFee: "常設展示：無料。館蔵品展・企画展・特別展は展覧会により異なる（中学生以下無料）",
-    hasCollaboration: false,
   });
 }
 

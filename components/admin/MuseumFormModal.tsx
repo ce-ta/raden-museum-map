@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { MuseumMapItem, NewMuseumInput, NewCollaborationInput } from "@/types/museum";
 import { uploadMuseumImage } from "@/lib/actions/museum-admin";
+import { checkCollaboration } from "@/lib/collaboration";
 import { validateImageFile, MAX_IMAGE_LABEL } from "@/lib/imageUpload";
 import CollaborationFields from "./CollaborationFields";
 
@@ -62,7 +63,7 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
         admissionFee: initialMuseum?.admissionFee ?? "",
         coverImageUrl: initialMuseum?.coverImageUrl ?? "",
         subImageUrls: initialMuseum?.subImageUrls ?? [],
-        hasCollaboration: initialMuseum?.hasCollaboration ?? false,
+        hasCollaboration: initialMuseum != null ? checkCollaboration(initialMuseum) : false,
     });
 
     // 必須項目ごとのエラーメッセージ。キーが存在する項目のみ入力欄の下に表示される
@@ -152,7 +153,6 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
             admissionFee: form.admissionFee || null,
             coverImageUrl: form.coverImageUrl || null,
             subImageUrls: form.subImageUrls.map((s) => s.trim()).filter(Boolean),
-            hasCollaboration: form.hasCollaboration,
             title: form.title,
             description: form.description,
             sourceUrl: form.sourceUrl,
@@ -187,7 +187,7 @@ export default function MuseumFormModal({ mode, initialMuseum, facilityTypes, pr
             admissionFee: form.admissionFee || null,
             coverImageUrl: form.coverImageUrl || null,
             subImageUrls: form.subImageUrls.map((s) => s.trim()).filter(Boolean),
-            hasCollaboration: form.hasCollaboration
+            collaborations: initialMuseum.collaborations
         };
         await onUpdate(museum);
         onClose();

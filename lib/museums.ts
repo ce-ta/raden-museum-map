@@ -150,10 +150,14 @@ export function addMuseum(
 }
 
 export function updateMuseumRecord(museum: MuseumMapItem) {
-    const { id, ...data } = museum;
+    const { id, typeId, prefectureCode, collaborations, ...data } = museum;
     return prisma.museum.update({
         where: { id },
-        data
+        data: {
+            ...data,
+            type: { connect: { id: typeId } },
+            prefecture: { connect: { code: prefectureCode } },
+        },
     })
 }
 
@@ -175,7 +179,7 @@ function addMuseumWithCollaboration(
 ) {
     return prisma.$transaction(async (tx) => {
         const createdMuseum = await tx.museum.create({
-            data: { ...museum, hasCollaboration: true },
+            data: museum,
         });
         const createdCollaboration = await tx.officialCollaboration.create({
             data: { ...collaboration, museumId: createdMuseum.id },

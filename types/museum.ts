@@ -3,6 +3,7 @@ import type { Region } from "@/lib/regions";
 // 地図表示に必要な最小限のフィールドのみを持つ型。
 export type MuseumMapItem = NewMuseumInput & {
   id: string;
+  collaborations: { isOfficial: boolean }[];
 };
 
 export type FilterState = {
