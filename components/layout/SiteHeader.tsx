@@ -24,7 +24,7 @@ export default async function SiteHeader() {
                     </Link>
                 ))}
             </nav>
-            {session ? (
+            {/* {session ? (
                 <>
                     <Link
                         href="/admin"
@@ -50,9 +50,7 @@ export default async function SiteHeader() {
                 >
                     管理者ログイン
                 </Link>
-            )
-            }
-
+            )} */}
         </header >
     );
 }
