@@ -4,6 +4,7 @@
 
 import { format } from "date-fns";
 import type { OfficialCollaboration, Museum } from "@/app/generated/prisma/client";
+import Loading from "@/app/loading";
 
 export type CollaboDetail = OfficialCollaboration & { museum: Museum };
 
@@ -22,7 +23,7 @@ export default function CollaborationDetailPanel({ detailCollabo, loading }: { d
 
                 <div className="flex-1 min-h-0 bg-neutral-800 p-4 overflow-y-auto">
                     {loading ? (
-                        <p className="bg-neutral-800 text-neutral-100 p-4 h-full">読み込み中...</p>
+                        <Loading />
                     ) : (
                         !detailCollabo ? (
                             <p className="text-base text-neutral-500">コラボ企画を選択すると詳細が表示されます</p>

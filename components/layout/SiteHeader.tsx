@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/lib/sessions";
 import { logout } from "@/lib/actions/login";
+import NavPendingBar from "./NavPendingBar";
 
 const NAV_ITEMS = [
     { href: "/", label: "マップ" },
@@ -19,7 +20,7 @@ export default async function SiteHeader() {
             </Link>
             <nav aria-label="メイン" className="ml-auto hidden items-center gap-7 text-[13px] text-muted md:flex">
                 {NAV_ITEMS.map(({ href, label }) => (
-                    <Link key={href} href={href} className="hover:text-ink">
+                    <Link key={href} href={href} className="hover:text-ink relative">
                         {label}
                     </Link>
                 ))}
