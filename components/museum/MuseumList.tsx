@@ -47,10 +47,8 @@ export default function MuseumList({
                 </select>
             </div>
 
-            <ul className="scroll-thin min-h-0 flex-1 divide-y divide-line overflow-y-auto">
-                {isFetching ? (
-                    <li className="px-6 py-14 text-center text-[13px] text-muted">読み込み中...</li>
-                ) : museums.length === 0 ? (
+            <ul className={`scroll-thin min-h-0 flex-1 divide-y divide-line overflow-y-auto ${isFetching && "opacity-50 pointer-events-none transition-opacity"}`} aria-busy={isFetching} >
+                {museums.length === 0 ? (
                     <li className="px-6 py-14 text-center text-[13px] text-muted">
                         条件に合う美術館がありません
                         <br />
