@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getSession } from "@/lib/sessions";
 import { logout } from "@/lib/actions/login";
-import NavPendingBar from "./NavPendingBar";
 
 const NAV_ITEMS = [
     { href: "/", label: "マップ" },
@@ -25,7 +24,7 @@ export default async function SiteHeader() {
                     </Link>
                 ))}
             </nav>
-            {/* {session ? (
+            {session ? (
                 <>
                     <Link
                         href="/admin"
@@ -51,7 +50,7 @@ export default async function SiteHeader() {
                 >
                     管理者ログイン
                 </Link>
-            )} */}
+            )}
         </header >
     );
 }
