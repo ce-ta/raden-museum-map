@@ -42,7 +42,7 @@ export async function createMuseum(
     await requiredAdmin();
     validateMuseum(museum);
     if (collaboration != null) {
-        validateCollaboration(collaboration);
+        await validateCollaboration(collaboration);
     }
 
     return addMuseum(museum, collaboration)
