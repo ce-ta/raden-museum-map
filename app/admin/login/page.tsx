@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { login } from "@/lib/actions/login";
 import { useState } from "react";
 import type { LoginForm } from "@/types/admin";
+import Spinner from "@/components/ui/Spinner";
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -16,17 +17,21 @@ export default function AdminLoginPage() {
     });
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     function handleChange(prop: keyof LoginForm, data: string) {
         setForm((prev) => ({ ...prev, [prop]: data }));
     }
 
     async function handleLogin() {
+        setIsLoggingIn(true);
         const result = await login(form);
         if (!result.ok) {
             setErrorMessage(result.error ?? "");
+            setIsLoggingIn(false);
             return;
         }
+
         router.push("/admin");
     };
 
@@ -38,7 +43,7 @@ export default function AdminLoginPage() {
                 {errorMessage && (
                     <p
                         role="alert"
-                        className="mb-3 rounded-lg border border-red-800 bg-red-950 px-3 py-2 text-sm text-red-200"
+                        className="mb-3 rounded-lg border border-red-800 bg-red-950 px-3 py-2 text-sm text-red-200 whitespace-pre-line"
                     >
                         {errorMessage}
                     </p>
@@ -79,9 +84,11 @@ export default function AdminLoginPage() {
                     <button
                         type="button"
                         onClick={handleLogin}
-                        className="mt-2 cursor-pointer rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white"
+                        disabled={isLoggingIn}
+                        className="mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-white disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                        ログイン
+                        {isLoggingIn && <Spinner />}
+                        {isLoggingIn ? "ログイン中…" : "ログイン"}
                     </button>
                 </form>
             </div>

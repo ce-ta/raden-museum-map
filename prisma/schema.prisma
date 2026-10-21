@@ -90,3 +90,13 @@ model AdminUser {
   updatedAt    DateTime @updatedAt   // PW変更日時が分かるように
   createdAt    DateTime @default(now())
 }
+
+model LoginAttempt {
+  id           String @id @default(cuid())
+  ip           String
+  username     String
+  createdAt    DateTime @default(now())
+
+  @@index([ip, createdAt])
+  @@index([username, createdAt])
+}
